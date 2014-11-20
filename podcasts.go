@@ -8,15 +8,19 @@ import (
 )
 
 type EnclosureType string
+type ExplicitType string
 
 const (
 	MP3  EnclosureType = "audio/mpeg"
-	M4A  EnclosureType = "audio/mpeg"
-	MP4  EnclosureType = "video/mp4"
-	M4V  EnclosureType = "video/x-m4v"
-	MOV  EnclosureType = "video/quicktime"
-	PDF  EnclosureType = "application/pdf"
-	EPUB EnclosureType = "document/x-epub"
+	M4A                = "audio/mpeg"
+	MP4                = "video/mp4"
+	M4V                = "video/x-m4v"
+	MOV                = "video/quicktime"
+	PDF                = "application/pdf"
+	EPUB               = "document/x-epub"
+
+	Yes   ExplicitType = "yes"
+	Clean              = "clean"
 )
 
 type Owner struct {
@@ -44,16 +48,20 @@ type Enclosure struct {
 }
 
 type Item struct {
-	XMLName   xml.Name `xml:"item"`
-	Title     string   `xml:"title"`
-	Author    string   `xml:"itunes:author"`
-	Subtitle  string   `xml:"itunes:subtitle"`
-	Summary   string   `xml:"itunes:summary"`
-	Image     *Image
-	Enclosure *Enclosure
-	Guid      string        `xml:"guid"`
-	PubDate   time.Time     `xml:"pubdate"`
-	Duration  time.Duration `xml:"itunes:duration"`
+	XMLName         xml.Name `xml:"item"`
+	Title           string   `xml:"title"`
+	Author          string   `xml:"itunes:author"`
+	Subtitle        string   `xml:"itunes:subtitle"`
+	Summary         string   `xml:"itunes:summary"`
+	Explicit        string   `xml:"itunes:explicit"`
+	Block           string   `xml:"itunes:block"`
+	ClosedCaptioned string   `xml:"itunes:isClosedCaptioned"`
+	Order           int      `xml:"itunes:order"`
+	Image           *Image
+	Enclosure       *Enclosure
+	Guid            string        `xml:"guid"`
+	PubDate         time.Time     `xml:"pubdate"`
+	Duration        time.Duration `xml:"itunes:duration"`
 }
 
 type Channel struct {
@@ -64,7 +72,10 @@ type Channel struct {
 	Subtitle    string   `xml:"itunes:subtitle"`
 	Author      string   `xml:"itunes:author"`
 	Summary     string   `xml:"itunes:summary"`
+	Block       string   `xml:"items:block"`
 	Description string   `xml:"description"`
+	Complete    string   `xml:"itunes:complete"`
+	NewFeedURL  string   `xml:"itunes:new-feed-url`
 	Owner       *Owner
 	Image       *Image
 	Categories  []*Category
