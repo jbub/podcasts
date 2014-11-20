@@ -2,26 +2,25 @@ package podcasts
 
 import (
 	"encoding/xml"
-	"fmt"
-	"os"
+	"io"
 	"time"
 )
 
-type EnclosureType string
-type ExplicitType string
-
 const (
-	MP3  EnclosureType = "audio/mpeg"
-	M4A                = "audio/mpeg"
-	MP4                = "video/mp4"
-	M4V                = "video/x-m4v"
-	MOV                = "video/quicktime"
-	PDF                = "application/pdf"
-	EPUB               = "document/x-epub"
-
-	Yes   ExplicitType = "yes"
-	Clean              = "clean"
+	RssXmlns   = "http://www.itunes.com/dtds/podcast-1.0.dtd"
+	RssVersion = "2.0"
 )
+
+type PubDate struct {
+	time.Time
+}
+
+func (p PubDate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	e.EncodeToken(start)
+	e.EncodeToken(xml.CharData([]byte(p.Format(time.RFC822))))
+	e.EncodeToken(xml.EndElement{start.Name})
+	return nil
+}
 
 type Owner struct {
 	XMLName xml.Name `xml:"itunes:owner"`
@@ -41,41 +40,42 @@ type Category struct {
 }
 
 type Enclosure struct {
-	XMLName xml.Name      `xml:"enclosure"`
-	URL     string        `xml:"url,attr"`
-	Length  string        `xml:"length,attr"`
-	Type    EnclosureType `xml:"type,attr"`
+	XMLName xml.Name `xml:"enclosure"`
+	URL     string   `xml:"url,attr"`
+	Length  string   `xml:"length,attr"`
+	Type    string   `xml:"type,attr"`
 }
 
 type Item struct {
-	XMLName         xml.Name `xml:"item"`
-	Title           string   `xml:"title"`
-	Author          string   `xml:"itunes:author"`
-	Subtitle        string   `xml:"itunes:subtitle"`
-	Summary         string   `xml:"itunes:summary"`
-	Explicit        string   `xml:"itunes:explicit"`
-	Block           string   `xml:"itunes:block"`
-	ClosedCaptioned string   `xml:"itunes:isClosedCaptioned"`
-	Order           int      `xml:"itunes:order"`
+	XMLName         xml.Name      `xml:"item"`
+	Title           string        `xml:"title"`
+	GUID            string        `xml:"guid"`
+	PubDate         *PubDate      `xml:"pubdate"`
+	Author          string        `xml:"itunes:author,omitempty""`
+	Subtitle        string        `xml:"itunes:subtitle,omitempty""`
+	Summary         string        `xml:"itunes:summary,omitempty""`
+	Explicit        string        `xml:"itunes:explicit,omitempty"`
+	Block           string        `xml:"itunes:block,omitempty"`
+	ClosedCaptioned string        `xml:"itunes:isClosedCaptioned,omitempty"`
+	Order           int           `xml:"itunes:order,omitempty"`
+	Duration        time.Duration `xml:"itunes:duration,omitempty""`
 	Image           *Image
 	Enclosure       *Enclosure
-	Guid            string        `xml:"guid"`
-	PubDate         time.Time     `xml:"pubdate"`
-	Duration        time.Duration `xml:"itunes:duration"`
 }
 
 type Channel struct {
 	XMLName     xml.Name `xml:"channel"`
 	Title       string   `xml:"title"`
 	Link        string   `xml:"link"`
-	Copyright   string   `xml:"copyright"`
-	Subtitle    string   `xml:"itunes:subtitle"`
-	Author      string   `xml:"itunes:author"`
-	Summary     string   `xml:"itunes:summary"`
-	Block       string   `xml:"items:block"`
+	Language    string   `xml:"language"`
 	Description string   `xml:"description"`
-	Complete    string   `xml:"itunes:complete"`
-	NewFeedURL  string   `xml:"itunes:new-feed-url`
+	Copyright   string   `xml:"copyright"`
+	Subtitle    string   `xml:"itunes:subtitle,omitempty""`
+	Author      string   `xml:"itunes:author,omitempty""`
+	Summary     string   `xml:"itunes:summary,omitempty""`
+	Block       string   `xml:"itunes:block,omitempty"`
+	Complete    string   `xml:"itunes:complete,omitempty"`
+	NewFeedURL  string   `xml:"itunes:new-feed-url,omitempty"`
 	Owner       *Owner
 	Image       *Image
 	Categories  []*Category
@@ -86,44 +86,58 @@ type Feed struct {
 	XMLName xml.Name `xml:"rss"`
 	Xmlns   string   `xml:"xmlns:itunes,attr"`
 	Version string   `xml:"version,attr"`
-	Channel *Channel `xml:"channel"`
+	Channel *Channel
 }
 
-func main() {
-	feed := &Feed{
-		Xmlns:   "http://www.itunes.com/dtds/podcast-1.0.dtd",
-		Version: "2.0",
+type Podcast struct {
+	Title       string
+	Description string
+	URL         string
+	Copyright   string
+	Language    string
+	categories  []*Category
+	items       []*Item
+}
+
+func (p *Podcast) AddItem(item *Item) {
+	p.items = append(p.items, item)
+}
+
+func (p *Podcast) AddCategory(category *Category) {
+	p.categories = append(p.categories, category)
+}
+
+func (p *Podcast) Feed() *Feed {
+	f := &Feed{
+		Xmlns:   RssXmlns,
+		Version: RssVersion,
 		Channel: &Channel{
-			Title:     "lopata",
-			Link:      "lopata",
-			Copyright: "dasdasd",
-			Owner: &Owner{
-				Name:  "john",
-				Email: "dsa@das.sk",
-			},
-			Image: &Image{Href: "dsas"},
-			Categories: []*Category{
-				&Category{
-					Href: "dsadsa",
-					Categories: []*Category{
-						&Category{Href: "dsadsa"},
-					},
-				},
-				&Category{
-					Href: "hgfhgf",
-				},
-			},
-			Items: []*Item{
-				&Item{
-					Title: "dsadsa das dsa as",
-				},
-			},
+			Title:       p.Title,
+			Description: p.Description,
+			Link:        p.URL,
+			Copyright:   p.Copyright,
+			Language:    p.Language,
+			Items:       p.items,
+			Categories:  p.categories,
 		},
 	}
+	return f
+}
 
-	enc := xml.NewEncoder(os.Stdout)
-	enc.Indent("  ", "    ")
-	if err := enc.Encode(feed); err != nil {
-		fmt.Printf("error: %v\n", err)
+func ToXML(feed *Feed) (string, error) {
+	data, err := xml.MarshalIndent(feed, "", "  ")
+	if err != nil {
+		return "", err
 	}
+	s := xml.Header + string(data)
+	return s, nil
+}
+
+func WriteFeed(feed *Feed, w io.Writer) error {
+	if _, err := w.Write([]byte(xml.Header)); err != nil {
+		return err
+	}
+	e := xml.NewEncoder(w)
+	e.Indent("", "  ")
+	return e.Encode(feed)
 }
