@@ -1,7 +1,6 @@
 package podcasts
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -30,7 +29,6 @@ func (s *PodcastsTestSuite) TestPodcast() {
 			Type:   "MP3",
 		},
 	})
-	fmt.Println(ToXML(p.Feed()))
 }
 
 func TestPodcastsTestSuite(t *testing.T) {

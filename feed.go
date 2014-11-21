@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	RssXmlns   = "http://www.itunes.com/dtds/podcast-1.0.dtd"
-	RssVersion = "2.0"
+	rssXmlns   = "http://www.itunes.com/dtds/podcast-1.0.dtd"
+	rssVersion = "2.0"
 )
 
 type PubDate struct {
@@ -89,43 +89,8 @@ type Feed struct {
 	Channel *Channel
 }
 
-type Podcast struct {
-	Title       string
-	Description string
-	URL         string
-	Copyright   string
-	Language    string
-	categories  []*Category
-	items       []*Item
-}
-
-func (p *Podcast) AddItem(item *Item) {
-	p.items = append(p.items, item)
-}
-
-func (p *Podcast) AddCategory(category *Category) {
-	p.categories = append(p.categories, category)
-}
-
-func (p *Podcast) Feed() *Feed {
-	f := &Feed{
-		Xmlns:   RssXmlns,
-		Version: RssVersion,
-		Channel: &Channel{
-			Title:       p.Title,
-			Description: p.Description,
-			Link:        p.URL,
-			Copyright:   p.Copyright,
-			Language:    p.Language,
-			Items:       p.items,
-			Categories:  p.categories,
-		},
-	}
-	return f
-}
-
-func ToXML(feed *Feed) (string, error) {
-	data, err := xml.MarshalIndent(feed, "", "  ")
+func (f *Feed) Xml() (string, error) {
+	data, err := xml.MarshalIndent(f, "", "  ")
 	if err != nil {
 		return "", err
 	}
@@ -133,11 +98,11 @@ func ToXML(feed *Feed) (string, error) {
 	return s, nil
 }
 
-func WriteFeed(feed *Feed, w io.Writer) error {
+func (f *Feed) Write(w io.Writer) error {
 	if _, err := w.Write([]byte(xml.Header)); err != nil {
 		return err
 	}
-	e := xml.NewEncoder(w)
-	e.Indent("", "  ")
-	return e.Encode(feed)
+	enc := xml.NewEncoder(w)
+	enc.Indent("", "  ")
+	return enc.Encode(f)
 }
