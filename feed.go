@@ -50,7 +50,7 @@ type Item struct {
 	XMLName         xml.Name      `xml:"item"`
 	Title           string        `xml:"title"`
 	GUID            string        `xml:"guid"`
-	PubDate         *PubDate      `xml:"pubdate"`
+	PubDate         *PubDate      `xml:"pubDate"`
 	Author          string        `xml:"itunes:author,omitempty""`
 	Subtitle        string        `xml:"itunes:subtitle,omitempty""`
 	Summary         string        `xml:"itunes:summary,omitempty""`
