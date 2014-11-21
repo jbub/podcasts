@@ -17,7 +17,7 @@ type PubDate struct {
 
 func (p PubDate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	e.EncodeToken(start)
-	e.EncodeToken(xml.CharData([]byte(p.Format("Mon Jan 02 15:04:05 -0700 2006"))))
+	e.EncodeToken(xml.CharData([]byte(p.Format("Mon, 02 Jan 2006 15:04:05 -0700"))))
 	e.EncodeToken(xml.EndElement{start.Name})
 	return nil
 }
