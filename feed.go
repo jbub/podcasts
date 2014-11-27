@@ -48,20 +48,20 @@ type Enclosure struct {
 }
 
 type Item struct {
-	XMLName         xml.Name `xml:"item"`
-	Title           string   `xml:"title"`
-	PubDate         *PubDate `xml:"pubDate"`
-	Author          string   `xml:"itunes:author,omitempty""`
-	Block           string   `xml:"itunes:block,omitempty"`
-	Image           *Image
+	XMLName         xml.Name      `xml:"item"`
+	Title           string        `xml:"title"`
+	GUID            string        `xml:"guid"`
+	PubDate         *PubDate      `xml:"pubDate"`
+	Author          string        `xml:"itunes:author,omitempty""`
+	Block           string        `xml:"itunes:block,omitempty"`
 	Duration        time.Duration `xml:"itunes:duration,omitempty""`
 	Explicit        string        `xml:"itunes:explicit,omitempty"`
 	ClosedCaptioned string        `xml:"itunes:isClosedCaptioned,omitempty"`
 	Order           int           `xml:"itunes:order,omitempty"`
 	Subtitle        string        `xml:"itunes:subtitle,omitempty""`
 	Summary         string        `xml:"itunes:summary,omitempty""`
-	GUID            string        `xml:"guid"`
 	Enclosure       *Enclosure
+	Image           *Image
 }
 
 type Channel struct {
@@ -73,15 +73,15 @@ type Channel struct {
 	Description string   `xml:"description"`
 	Author      string   `xml:"itunes:author,omitempty""`
 	Block       string   `xml:"itunes:block,omitempty"`
-	Categories  []*Category
-	Image       *Image
-	Explicit    string `xml:"itunes:explicit,omitempty"`
-	Complete    string `xml:"itunes:complete,omitempty"`
-	NewFeedURL  string `xml:"itunes:new-feed-url,omitempty"`
+	Explicit    string   `xml:"itunes:explicit,omitempty"`
+	Complete    string   `xml:"itunes:complete,omitempty"`
+	NewFeedURL  string   `xml:"itunes:new-feed-url,omitempty"`
+	Subtitle    string   `xml:"itunes:subtitle,omitempty""`
+	Summary     string   `xml:"itunes:summary,omitempty""`
 	Owner       *Owner
-	Subtitle    string `xml:"itunes:subtitle,omitempty""`
-	Summary     string `xml:"itunes:summary,omitempty""`
+	Image       *Image
 	Items       []*Item
+	Categories  []*Category
 }
 
 type Feed struct {
