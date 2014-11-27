@@ -8,6 +8,8 @@ type Itunes struct {
 	Email      string
 	Explicit   string
 	Image      string
+	Block      string
+	Complete   string
 	categories []*Category
 }
 
@@ -53,6 +55,8 @@ func setupItunes(c *Channel, itunes *Itunes) {
 	c.Subtitle = itunes.Subtitle
 	c.Summary = itunes.Summary
 	c.Explicit = itunes.Explicit
+	c.Block = itunes.Block
+	c.Complete = itunes.Complete
 	c.Categories = itunes.categories
 
 	if itunes.Owner != "" && itunes.Email != "" {
