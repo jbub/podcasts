@@ -9,6 +9,7 @@ import (
 const (
 	rssXmlns   = "http://www.itunes.com/dtds/podcast-1.0.dtd"
 	rssVersion = "2.0"
+	rfc2822    = "Mon, 02 Jan 2006 15:04:05 -0700"
 )
 
 type PubDate struct {
@@ -17,7 +18,7 @@ type PubDate struct {
 
 func (p PubDate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	e.EncodeToken(start)
-	e.EncodeToken(xml.CharData([]byte(p.Format("Mon, 02 Jan 2006 15:04:05 -0700"))))
+	e.EncodeToken(xml.CharData([]byte(p.Format(rfc2822))))
 	e.EncodeToken(xml.EndElement{start.Name})
 	return nil
 }
@@ -42,24 +43,24 @@ type Category struct {
 type Enclosure struct {
 	XMLName xml.Name `xml:"enclosure"`
 	URL     string   `xml:"url,attr"`
-	Length  string   `xml:"length,attr"`
+	Length  string   `xml:"length,attr,omitempty"`
 	Type    string   `xml:"type,attr"`
 }
 
 type Item struct {
-	XMLName         xml.Name      `xml:"item"`
-	Title           string        `xml:"title"`
-	GUID            string        `xml:"guid"`
-	PubDate         *PubDate      `xml:"pubDate"`
-	Author          string        `xml:"itunes:author,omitempty""`
-	Subtitle        string        `xml:"itunes:subtitle,omitempty""`
-	Summary         string        `xml:"itunes:summary,omitempty""`
+	XMLName         xml.Name `xml:"item"`
+	Title           string   `xml:"title"`
+	PubDate         *PubDate `xml:"pubDate"`
+	Author          string   `xml:"itunes:author,omitempty""`
+	Block           string   `xml:"itunes:block,omitempty"`
+	Image           *Image
+	Duration        time.Duration `xml:"itunes:duration,omitempty""`
 	Explicit        string        `xml:"itunes:explicit,omitempty"`
-	Block           string        `xml:"itunes:block,omitempty"`
 	ClosedCaptioned string        `xml:"itunes:isClosedCaptioned,omitempty"`
 	Order           int           `xml:"itunes:order,omitempty"`
-	Duration        time.Duration `xml:"itunes:duration,omitempty""`
-	Image           *Image
+	Subtitle        string        `xml:"itunes:subtitle,omitempty""`
+	Summary         string        `xml:"itunes:summary,omitempty""`
+	GUID            string        `xml:"guid"`
 	Enclosure       *Enclosure
 }
 
@@ -67,18 +68,19 @@ type Channel struct {
 	XMLName     xml.Name `xml:"channel"`
 	Title       string   `xml:"title"`
 	Link        string   `xml:"link"`
+	Copyright   string   `xml:"copyright"`
 	Language    string   `xml:"language"`
 	Description string   `xml:"description"`
-	Copyright   string   `xml:"copyright"`
-	Subtitle    string   `xml:"itunes:subtitle,omitempty""`
 	Author      string   `xml:"itunes:author,omitempty""`
-	Summary     string   `xml:"itunes:summary,omitempty""`
 	Block       string   `xml:"itunes:block,omitempty"`
-	Complete    string   `xml:"itunes:complete,omitempty"`
-	NewFeedURL  string   `xml:"itunes:new-feed-url,omitempty"`
-	Owner       *Owner
-	Image       *Image
 	Categories  []*Category
+	Image       *Image
+	Explicit    string `xml:"itunes:explicit,omitempty"`
+	Complete    string `xml:"itunes:complete,omitempty"`
+	NewFeedURL  string `xml:"itunes:new-feed-url,omitempty"`
+	Owner       *Owner
+	Subtitle    string `xml:"itunes:subtitle,omitempty""`
+	Summary     string `xml:"itunes:summary,omitempty""`
 	Items       []*Item
 }
 

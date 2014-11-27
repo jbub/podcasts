@@ -13,12 +13,16 @@ type PodcastsTestSuite struct {
 }
 
 func (s *PodcastsTestSuite) TestPodcast() {
+	i := &Itunes{
+		Explicit: "yes",
+	}
 	p := &Podcast{
 		Title:       "Palenica borisa filana",
 		Description: "Zábavný program pre každého, komu to páli.",
 		Language:    "SK",
-		URL:         "http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana",
+		Link:        "http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana",
 		Copyright:   "2013 RTVS - Rozhlas a televízia Slovenska",
+		Itunes:      i,
 	}
 	p.AddItem(&Item{
 		Title:   "Epizoda 1",
