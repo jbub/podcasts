@@ -2,14 +2,15 @@ package podcasts
 
 type Itunes struct {
 	Author     string
+	Block      string
+	Explicit   string
+	Complete   string
+	NewFeedUrl string
 	Subtitle   string
 	Summary    string
 	Owner      string
 	Email      string
-	Explicit   string
 	Image      string
-	Block      string
-	Complete   string
 	categories []*Category
 }
 
@@ -52,11 +53,12 @@ func (p *Podcast) Feed() *Feed {
 
 func setupItunes(c *Channel, itunes *Itunes) {
 	c.Author = itunes.Author
+	c.Block = itunes.Block
+	c.Explicit = itunes.Explicit
+	c.Complete = itunes.Complete
+	c.NewFeedURL = itunes.NewFeedUrl
 	c.Subtitle = itunes.Subtitle
 	c.Summary = itunes.Summary
-	c.Explicit = itunes.Explicit
-	c.Block = itunes.Block
-	c.Complete = itunes.Complete
 	c.Categories = itunes.categories
 
 	if itunes.Owner != "" && itunes.Email != "" {
