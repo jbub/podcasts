@@ -36,7 +36,7 @@ type Image struct {
 
 type Category struct {
 	XMLName    xml.Name `xml:"itunes:category"`
-	Href       string   `xml:"text,attr"`
+	Text       string   `xml:"text,attr"`
 	Categories []*Category
 }
 

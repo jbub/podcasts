@@ -1,10 +1,12 @@
 package podcasts
 
 import (
+	"log"
 	"os"
 	"testing"
 	"time"
 
+	"github.com/jbub/podcasts/itunes"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -13,8 +15,11 @@ type PodcastsTestSuite struct {
 }
 
 func (s *PodcastsTestSuite) TestPodcast() {
-	i := &Itunes{
-		Explicit: "yes",
+	itunes, err := itunes.New(
+		itunes.Explicit("yes"),
+	)
+	if err != nil {
+		log.Fatal(err)
 	}
 	p := &Podcast{
 		Title:       "Palenica borisa filana",
@@ -22,8 +27,8 @@ func (s *PodcastsTestSuite) TestPodcast() {
 		Language:    "SK",
 		Link:        "http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana",
 		Copyright:   "2013 RTVS - Rozhlas a televízia Slovenska",
-		Itunes:      i,
 	}
+	p.SetItunes(itunes)
 	p.AddItem(&Item{
 		Title:   "Epizoda 1",
 		GUID:    "http://slovensko.rtvs.sk/clanok/ludia/experti",

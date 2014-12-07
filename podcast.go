@@ -1,22 +1,6 @@
 package podcasts
 
-type Itunes struct {
-	Author     string
-	Block      string
-	Explicit   string
-	Complete   string
-	NewFeedUrl string
-	Subtitle   string
-	Summary    string
-	Owner      string
-	Email      string
-	Image      string
-	categories []*Category
-}
-
-func (i *Itunes) AddCategory(category *Category) {
-	i.categories = append(i.categories, category)
-}
+import "github.com/jbub/podcasts/itunes"
 
 type Podcast struct {
 	Title       string
@@ -24,12 +8,16 @@ type Podcast struct {
 	Link        string
 	Language    string
 	Copyright   string
-	Itunes      *Itunes
+	itunes      *itunes.Options
 	items       []*Item
 }
 
 func (p *Podcast) AddItem(item *Item) {
 	p.items = append(p.items, item)
+}
+
+func (p *Podcast) SetItunes(opts *itunes.Options) {
+	p.itunes = opts
 }
 
 func (p *Podcast) Feed() *Feed {
@@ -45,32 +33,35 @@ func (p *Podcast) Feed() *Feed {
 			Items:       p.items,
 		},
 	}
-	if p.Itunes != nil {
-		setupItunes(f.Channel, p.Itunes)
+	if p.itunes != nil {
+		p.setupItunesFeed(f)
 	}
 	return f
 }
 
-func setupItunes(c *Channel, itunes *Itunes) {
-	c.Author = itunes.Author
-	c.Block = itunes.Block
-	c.Explicit = itunes.Explicit
-	c.Complete = itunes.Complete
-	c.NewFeedURL = itunes.NewFeedUrl
-	c.Subtitle = itunes.Subtitle
-	c.Summary = itunes.Summary
-	c.Categories = itunes.categories
+func (p *Podcast) setupItunesFeed(f *Feed) {
+	f.Channel.Author = p.itunes.Author
+	f.Channel.Block = p.itunes.Block
+	f.Channel.Explicit = p.itunes.Explicit
+	f.Channel.Complete = p.itunes.Complete
+	f.Channel.NewFeedURL = p.itunes.NewFeedURL
+	f.Channel.Subtitle = p.itunes.Subtitle
+	f.Channel.Summary = p.itunes.Summary
 
-	if itunes.Owner != "" && itunes.Email != "" {
-		c.Owner = &Owner{
-			Name:  itunes.Owner,
-			Email: itunes.Email,
+	for _, c := range p.itunes.Categories {
+		f.Channel.Categories = append(f.Channel.Categories, &Category{Text: c.Text})
+	}
+
+	if p.itunes.Owner != "" && p.itunes.Email != "" {
+		f.Channel.Owner = &Owner{
+			Name:  p.itunes.Owner,
+			Email: p.itunes.Email,
 		}
 	}
 
-	if itunes.Image != "" {
-		c.Image = &Image{
-			Href: itunes.Image,
+	if p.itunes.Image != "" {
+		f.Channel.Image = &Image{
+			Href: p.itunes.Image,
 		}
 	}
 }
