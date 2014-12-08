@@ -1,14 +1,22 @@
 package itunes
 
-func New(options ...func(i *Options) error) (*Options, error) {
-	opts := &Options{}
-	for _, option := range options {
-		err := option(opts)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return opts, nil
+import (
+	"errors"
+	"net/url"
+)
+
+var (
+	ErrInvalidURL   = errors.New("itunes: invalid url")
+	ErrInvalidImage = errors.New("itunes: invalid image")
+)
+
+const (
+	ValueYes = "yes"
+)
+
+func Options(options ...func(i *ChannelOpts) error) (*ChannelOpts, error) {
+	opts := ChannelOpts{}
+	return &opts, opts.SetOption(options...)
 }
 
 type Category struct {
@@ -16,7 +24,7 @@ type Category struct {
 	Categories []*Category
 }
 
-type Options struct {
+type ChannelOpts struct {
 	Author     string
 	Block      string
 	Explicit   string
@@ -30,62 +38,86 @@ type Options struct {
 	Categories []*Category
 }
 
-func (i *Options) AddCategory(c *Category) {
+func (i *ChannelOpts) SetOption(options ...func(*ChannelOpts) error) error {
+	for _, opt := range options {
+		if err := opt(i); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (i *ChannelOpts) AddCategory(c *Category) {
 	i.Categories = append(i.Categories, c)
 }
 
-func Author(author string) func(i *Options) error {
-	return func(i *Options) error {
+func Author(author string) func(i *ChannelOpts) error {
+	return func(i *ChannelOpts) error {
 		i.Author = author
 		return nil
 	}
 }
 
-func Explicit(explicit string) func(i *Options) error {
-	return func(i *Options) error {
-		i.Explicit = explicit
+func Block(i *ChannelOpts) error {
+	i.Block = ValueYes
+	return nil
+}
+
+func Explicit(i *ChannelOpts) error {
+	i.Explicit = ValueYes
+	return nil
+}
+
+func Complete(i *ChannelOpts) error {
+	i.Complete = ValueYes
+	return nil
+}
+
+func NewFeedURL(newURL string) func(i *ChannelOpts) error {
+	return func(i *ChannelOpts) error {
+		u, err := url.Parse(newURL)
+		if err != nil {
+			return err
+		}
+		if !u.IsAbs() {
+			return ErrInvalidURL
+		}
+		i.NewFeedURL = newURL
 		return nil
 	}
 }
 
-func NewFeedURL(url string) func(i *Options) error {
-	return func(i *Options) error {
-		i.NewFeedURL = url
-		return nil
-	}
-}
-
-func Subtitle(subtitle string) func(i *Options) error {
-	return func(i *Options) error {
+func Subtitle(subtitle string) func(i *ChannelOpts) error {
+	return func(i *ChannelOpts) error {
 		i.Subtitle = subtitle
 		return nil
 	}
 }
 
-func Summary(summary string) func(i *Options) error {
-	return func(i *Options) error {
+func Summary(summary string) func(i *ChannelOpts) error {
+	return func(i *ChannelOpts) error {
 		i.Summary = summary
 		return nil
 	}
 }
 
-func Complete(complete string) func(i *Options) error {
-	return func(i *Options) error {
-		i.Complete = complete
-		return nil
-	}
-}
-
-func Owner(name string, email string) func(i *Options) error {
-	return func(i *Options) error {
+func Owner(name string, email string) func(i *ChannelOpts) error {
+	return func(i *ChannelOpts) error {
 		i.Owner = name
 		i.Email = email
 		return nil
 	}
 }
 
-func Image(href string) func(i *Options) error {
-	return func(i *Options) error {
+func Image(href string) func(i *ChannelOpts) error {
+	return func(i *ChannelOpts) error {
+		u, err := url.Parse(href)
+		if err != nil {
+			return err
+		}
+		if !u.IsAbs() {
+			return ErrInvalidImage
+		}
 		i.Image = href
 		return nil
 	}

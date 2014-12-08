@@ -8,7 +8,7 @@ type Podcast struct {
 	Link        string
 	Language    string
 	Copyright   string
-	itunes      *itunes.Options
+	options     *itunes.ChannelOpts
 	items       []*Item
 }
 
@@ -16,8 +16,8 @@ func (p *Podcast) AddItem(item *Item) {
 	p.items = append(p.items, item)
 }
 
-func (p *Podcast) SetItunes(opts *itunes.Options) {
-	p.itunes = opts
+func (p *Podcast) SetOptions(opts *itunes.ChannelOpts) {
+	p.options = opts
 }
 
 func (p *Podcast) Feed() *Feed {
@@ -33,35 +33,35 @@ func (p *Podcast) Feed() *Feed {
 			Items:       p.items,
 		},
 	}
-	if p.itunes != nil {
+	if p.options != nil {
 		p.setupItunesFeed(f)
 	}
 	return f
 }
 
 func (p *Podcast) setupItunesFeed(f *Feed) {
-	f.Channel.Author = p.itunes.Author
-	f.Channel.Block = p.itunes.Block
-	f.Channel.Explicit = p.itunes.Explicit
-	f.Channel.Complete = p.itunes.Complete
-	f.Channel.NewFeedURL = p.itunes.NewFeedURL
-	f.Channel.Subtitle = p.itunes.Subtitle
-	f.Channel.Summary = p.itunes.Summary
+	f.Channel.Author = p.options.Author
+	f.Channel.Block = p.options.Block
+	f.Channel.Explicit = p.options.Explicit
+	f.Channel.Complete = p.options.Complete
+	f.Channel.NewFeedURL = p.options.NewFeedURL
+	f.Channel.Subtitle = p.options.Subtitle
+	f.Channel.Summary = p.options.Summary
 
-	for _, c := range p.itunes.Categories {
+	for _, c := range p.options.Categories {
 		f.Channel.Categories = append(f.Channel.Categories, &Category{Text: c.Text})
 	}
 
-	if p.itunes.Owner != "" && p.itunes.Email != "" {
+	if p.options.Owner != "" && p.options.Email != "" {
 		f.Channel.Owner = &Owner{
-			Name:  p.itunes.Owner,
-			Email: p.itunes.Email,
+			Name:  p.options.Owner,
+			Email: p.options.Email,
 		}
 	}
 
-	if p.itunes.Image != "" {
+	if p.options.Image != "" {
 		f.Channel.Image = &Image{
-			Href: p.itunes.Image,
+			Href: p.options.Image,
 		}
 	}
 }

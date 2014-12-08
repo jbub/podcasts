@@ -15,8 +15,16 @@ type PodcastsTestSuite struct {
 }
 
 func (s *PodcastsTestSuite) TestPodcast() {
-	itunes, err := itunes.New(
-		itunes.Explicit("yes"),
+	opts, err := itunes.Options(
+		itunes.Author("Boris Filan"),
+		itunes.Block,
+		itunes.Explicit,
+		itunes.Complete,
+		itunes.NewFeedURL("http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana"),
+		itunes.Subtitle("Zábavný program pre každého, komu to páli."),
+		itunes.Summary("Zábavný program pre každého, komu to páli."),
+		itunes.Owner("jbub", "dsad@dsad.sk"),
+		itunes.Image("http://jbub.eu/image.jpeg"),
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -28,7 +36,7 @@ func (s *PodcastsTestSuite) TestPodcast() {
 		Link:        "http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana",
 		Copyright:   "2013 RTVS - Rozhlas a televízia Slovenska",
 	}
-	p.SetItunes(itunes)
+	p.SetOptions(opts)
 	p.AddItem(&Item{
 		Title:   "Epizoda 1",
 		GUID:    "http://slovensko.rtvs.sk/clanok/ludia/experti",
