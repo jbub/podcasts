@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-    p := &Podcast{
+    p := &podcasts.Podcast{
         Title:       "Palenica borisa filana",
         Description: "Zábavný program pre každého, komu to páli.",
         Language:    "SK",
