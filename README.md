@@ -22,7 +22,7 @@ func main() {
         Copyright:   "2013 RTVS - Rozhlas a televízia Slovenska",
     }
 
-    opts, err := itunes.Options(
+    settings, err := itunes.Settings(
         itunes.Author("Boris Filan"),
         itunes.Block,
         itunes.Explicit,
@@ -38,7 +38,7 @@ func main() {
         log.Fatal(err)
     }
 
-    p.SetOptions(opts)
+    p.SetOptions(settings)
 
     p.AddItem(&podcasts.Item{
         Title:   "Epizoda 1",

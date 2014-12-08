@@ -14,30 +14,30 @@ const (
 	ValueYes = "yes"
 )
 
-func Author(author string) func(i *ChannelOpts) error {
-	return func(i *ChannelOpts) error {
-		i.Author = author
+func Author(author string) func(s *Settings) error {
+	return func(s *Settings) error {
+		s.Author = author
 		return nil
 	}
 }
 
-func Block(i *ChannelOpts) error {
-	i.Block = ValueYes
+func Block(s *Settings) error {
+	s.Block = ValueYes
 	return nil
 }
 
-func Explicit(i *ChannelOpts) error {
-	i.Explicit = ValueYes
+func Explicit(s *Settings) error {
+	s.Explicit = ValueYes
 	return nil
 }
 
-func Complete(i *ChannelOpts) error {
-	i.Complete = ValueYes
+func Complete(s *Settings) error {
+	s.Complete = ValueYes
 	return nil
 }
 
-func NewFeedURL(newURL string) func(i *ChannelOpts) error {
-	return func(i *ChannelOpts) error {
+func NewFeedURL(newURL string) func(s *Settings) error {
+	return func(s *Settings) error {
 		u, err := url.Parse(newURL)
 		if err != nil {
 			return err
@@ -45,35 +45,35 @@ func NewFeedURL(newURL string) func(i *ChannelOpts) error {
 		if !u.IsAbs() {
 			return ErrInvalidURL
 		}
-		i.NewFeedURL = newURL
+		s.NewFeedURL = newURL
 		return nil
 	}
 }
 
-func Subtitle(subtitle string) func(i *ChannelOpts) error {
-	return func(i *ChannelOpts) error {
-		i.Subtitle = subtitle
+func Subtitle(subtitle string) func(s *Settings) error {
+	return func(s *Settings) error {
+		s.Subtitle = subtitle
 		return nil
 	}
 }
 
-func Summary(summary string) func(i *ChannelOpts) error {
-	return func(i *ChannelOpts) error {
-		i.Summary = summary
+func Summary(summary string) func(s *Settings) error {
+	return func(s *Settings) error {
+		s.Summary = summary
 		return nil
 	}
 }
 
-func Owner(name string, email string) func(i *ChannelOpts) error {
-	return func(i *ChannelOpts) error {
-		i.Owner = name
-		i.Email = email
+func Owner(name string, email string) func(s *Settings) error {
+	return func(s *Settings) error {
+		s.Owner = name
+		s.Email = email
 		return nil
 	}
 }
 
-func Image(href string) func(i *ChannelOpts) error {
-	return func(i *ChannelOpts) error {
+func Image(href string) func(s *Settings) error {
+	return func(s *Settings) error {
 		u, err := url.Parse(href)
 		if err != nil {
 			return err
@@ -81,7 +81,7 @@ func Image(href string) func(i *ChannelOpts) error {
 		if !u.IsAbs() {
 			return ErrInvalidImage
 		}
-		i.Image = href
+		s.Image = href
 		return nil
 	}
 }

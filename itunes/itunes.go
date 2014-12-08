@@ -1,8 +1,8 @@
 package itunes
 
-func Options(options ...func(i *ChannelOpts) error) (*ChannelOpts, error) {
-	opts := ChannelOpts{}
-	return &opts, opts.SetOption(options...)
+func NewSettings(options ...func(s *Settings) error) (*Settings, error) {
+	s := Settings{}
+	return &s, s.SetOption(options...)
 }
 
 type Category struct {
@@ -10,7 +10,7 @@ type Category struct {
 	Categories []*Category
 }
 
-type ChannelOpts struct {
+type Settings struct {
 	Author     string
 	Block      string
 	Explicit   string
@@ -24,15 +24,15 @@ type ChannelOpts struct {
 	Categories []*Category
 }
 
-func (i *ChannelOpts) SetOption(options ...func(*ChannelOpts) error) error {
+func (s *Settings) SetOption(options ...func(*Settings) error) error {
 	for _, opt := range options {
-		if err := opt(i); err != nil {
+		if err := opt(s); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (i *ChannelOpts) AddCategory(c *Category) {
-	i.Categories = append(i.Categories, c)
+func (s *Settings) AddCategory(c *Category) {
+	s.Categories = append(s.Categories, c)
 }

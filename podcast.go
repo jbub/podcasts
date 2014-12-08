@@ -8,7 +8,7 @@ type Podcast struct {
 	Link        string
 	Language    string
 	Copyright   string
-	options     *itunes.ChannelOpts
+	options     *itunes.Settings
 	items       []*Item
 }
 
@@ -16,8 +16,8 @@ func (p *Podcast) AddItem(item *Item) {
 	p.items = append(p.items, item)
 }
 
-func (p *Podcast) SetOptions(opts *itunes.ChannelOpts) {
-	p.options = opts
+func (p *Podcast) SetOptions(s *itunes.Settings) {
+	p.options = s
 }
 
 func (p *Podcast) Feed() *Feed {
