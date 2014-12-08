@@ -15,6 +15,14 @@ type PodcastsTestSuite struct {
 }
 
 func (s *PodcastsTestSuite) TestPodcast() {
+	p := &Podcast{
+		Title:       "Palenica borisa filana",
+		Description: "Zábavný program pre každého, komu to páli.",
+		Language:    "SK",
+		Link:        "http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana",
+		Copyright:   "2013 RTVS - Rozhlas a televízia Slovenska",
+	}
+
 	opts, err := itunes.Options(
 		itunes.Author("Boris Filan"),
 		itunes.Block,
@@ -23,20 +31,14 @@ func (s *PodcastsTestSuite) TestPodcast() {
 		itunes.NewFeedURL("http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana"),
 		itunes.Subtitle("Zábavný program pre každého, komu to páli."),
 		itunes.Summary("Zábavný program pre každého, komu to páli."),
-		itunes.Owner("jbub", "dsad@dsad.sk"),
-		itunes.Image("http://jbub.eu/image.jpeg"),
+		itunes.Owner("Rozhlas a televízia Slovenska", "vsv@rtvs.sk"),
+		itunes.Image("http://cdn.srv.rtvs.sk/a501/image/file/13/0006/wRe0.filan_boris_700.jpg"),
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
-	p := &Podcast{
-		Title:       "Palenica borisa filana",
-		Description: "Zábavný program pre každého, komu to páli.",
-		Language:    "SK",
-		Link:        "http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana",
-		Copyright:   "2013 RTVS - Rozhlas a televízia Slovenska",
-	}
 	p.SetOptions(opts)
+
 	p.AddItem(&Item{
 		Title:   "Epizoda 1",
 		GUID:    "http://slovensko.rtvs.sk/clanok/ludia/experti",
