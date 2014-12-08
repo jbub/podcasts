@@ -39,11 +39,11 @@ func main() {
 
     p.SetOptions(opts)
 
-    p.AddItem(&Item{
+    p.AddItem(&podcasts.Item{
         Title:   "Epizoda 1",
         GUID:    "http://slovensko.rtvs.sk/clanok/ludia/experti",
-        PubDate: &PubDate{time.Now()},
-        Enclosure: &Enclosure{
+        PubDate: &podcasts.PubDate{time.Now()},
+        Enclosure: &podcasts.Enclosure{
             URL:    "http://static-media.rtvs.sk/items/223/546de29065c77.mp3",
             Length: "321",
             Type:   "MP3",
