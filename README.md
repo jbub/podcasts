@@ -22,7 +22,7 @@ func main() {
         Copyright:   "2013 RTVS - Rozhlas a televízia Slovenska",
     }
 
-    settings, err := itunes.Settings(
+    settings, err := itunes.NewSettings(
         itunes.Author("Boris Filan"),
         itunes.Block,
         itunes.Explicit,
