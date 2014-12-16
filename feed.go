@@ -34,10 +34,10 @@ type ItunesImage struct {
 	Href    string   `xml:"href,attr"`
 }
 
-type Category struct {
+type ItunesCategory struct {
 	XMLName    xml.Name `xml:"itunes:category"`
 	Text       string   `xml:"text,attr"`
-	Categories []*Category
+	Categories []*ItunesCategory
 }
 
 type Enclosure struct {
@@ -81,7 +81,7 @@ type Channel struct {
 	Owner       *ItunesOwner
 	Image       *ItunesImage
 	Items       []*Item
-	Categories  []*Category
+	Categories  []*ItunesCategory
 }
 
 type Feed struct {

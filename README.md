@@ -37,7 +37,7 @@ func main() {
     err := feed.SetOptions(
         podcasts.Author("Boris Filan"),
         podcasts.Block,
-        podcasts.IExplicit,
+        podcasts.Explicit,
         podcasts.Complete,
         podcasts.NewFeedURL("http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana"),
         podcasts.Subtitle("Zábavný program pre každého, komu to páli."),
