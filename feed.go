@@ -91,6 +91,15 @@ type Feed struct {
 	Channel *Channel
 }
 
+func (f *Feed) SetOptions(options ...func(f *Feed) error) error {
+	for _, opt := range options {
+		if err := opt(f); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (f *Feed) Xml() (string, error) {
 	data, err := xml.MarshalIndent(f, "", "  ")
 	if err != nil {

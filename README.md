@@ -10,7 +10,6 @@ import (
     "time"
 
     "github.com/jbub/podcasts"
-    "github.com/jbub/podcasts/itunes"
 )
 
 func main() {
@@ -21,24 +20,6 @@ func main() {
         Link:        "http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana",
         Copyright:   "2013 RTVS - Rozhlas a televízia Slovenska",
     }
-
-    settings, err := itunes.NewSettings(
-        itunes.Author("Boris Filan"),
-        itunes.Block,
-        itunes.Explicit,
-        itunes.Complete,
-        itunes.NewFeedURL("http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana"),
-        itunes.Subtitle("Zábavný program pre každého, komu to páli."),
-        itunes.Summary("Zábavný program pre každého, komu to páli."),
-        itunes.Owner("Rozhlas a televízia Slovenska", "vsv@rtvs.sk"),
-        itunes.Image("http://cdn.srv.rtvs.sk/a501/image/file/13/0006/wRe0.filan_boris_700.jpg"),
-    )
-
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    p.SetOptions(settings)
 
     p.AddItem(&podcasts.Item{
         Title:   "Epizoda 1",
@@ -51,7 +32,25 @@ func main() {
         },
     })
 
-    p.Feed().Write(os.Stdout)
+    feed := p.Feed()
+
+    err := feed.SetOptions(
+        podcasts.ItunesAuthor("Boris Filan"),
+        podcasts.ItunesBlock,
+        podcasts.ItunesExplicit,
+        podcasts.ItunesComplete,
+        podcasts.ItunesNewFeedURL("http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana"),
+        podcasts.ItunesSubtitle("Zábavný program pre každého, komu to páli."),
+        podcasts.ItunesSummary("Zábavný program pre každého, komu to páli."),
+        podcasts.ItunesOwner("Rozhlas a televízia Slovenska", "vsv@rtvs.sk"),
+        podcasts.ItunesImage("http://cdn.srv.rtvs.sk/a501/image/file/13/0006/wRe0.filan_boris_700.jpg"),
+    )
+
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    feed.Write(os.Stdout)
 }
 
 ```

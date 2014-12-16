@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jbub/podcasts/itunes"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -22,23 +21,6 @@ func (s *PodcastsTestSuite) TestPodcast() {
 		Link:        "http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana",
 		Copyright:   "2013 RTVS - Rozhlas a televízia Slovenska",
 	}
-
-	settings, err := itunes.NewSettings(
-		itunes.Author("Boris Filan"),
-		itunes.Block,
-		itunes.Explicit,
-		itunes.Complete,
-		itunes.NewFeedURL("http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana"),
-		itunes.Subtitle("Zábavný program pre každého, komu to páli."),
-		itunes.Summary("Zábavný program pre každého, komu to páli."),
-		itunes.Owner("Rozhlas a televízia Slovenska", "vsv@rtvs.sk"),
-		itunes.Image("http://cdn.srv.rtvs.sk/a501/image/file/13/0006/wRe0.filan_boris_700.jpg"),
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-	p.SetOptions(settings)
-
 	p.AddItem(&Item{
 		Title:   "Epizoda 1",
 		GUID:    "http://slovensko.rtvs.sk/clanok/ludia/experti",
@@ -49,7 +31,22 @@ func (s *PodcastsTestSuite) TestPodcast() {
 			Type:   "MP3",
 		},
 	})
-	p.Feed().Write(os.Stdout)
+	feed := p.Feed()
+	err := feed.SetOptions(
+		ItunesAuthor("Boris Filan"),
+		ItunesBlock,
+		ItunesExplicit,
+		ItunesComplete,
+		ItunesNewFeedURL("http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana"),
+		ItunesSubtitle("Zábavný program pre každého, komu to páli."),
+		ItunesSummary("Zábavný program pre každého, komu to páli."),
+		ItunesOwner("Rozhlas a televízia Slovenska", "vsv@rtvs.sk"),
+		ItunesImage("http://cdn.srv.rtvs.sk/a501/image/file/13/0006/wRe0.filan_boris_700.jpg"),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	feed.Write(os.Stdout)
 }
 
 func TestPodcastsTestSuite(t *testing.T) {
