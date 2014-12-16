@@ -33,15 +33,15 @@ func (s *PodcastsTestSuite) TestPodcast() {
 	})
 	feed := p.Feed()
 	err := feed.SetOptions(
-		ItunesAuthor("Boris Filan"),
-		ItunesBlock,
-		ItunesExplicit,
-		ItunesComplete,
-		ItunesNewFeedURL("http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana"),
-		ItunesSubtitle("Zábavný program pre každého, komu to páli."),
-		ItunesSummary("Zábavný program pre každého, komu to páli."),
-		ItunesOwner("Rozhlas a televízia Slovenska", "vsv@rtvs.sk"),
-		ItunesImage("http://cdn.srv.rtvs.sk/a501/image/file/13/0006/wRe0.filan_boris_700.jpg"),
+		Author("Boris Filan"),
+		Block,
+		Explicit,
+		Complete,
+		NewFeedURL("http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana"),
+		Subtitle("Zábavný program pre každého, komu to páli."),
+		Summary("Zábavný program pre každého, komu to páli."),
+		Owner("Rozhlas a televízia Slovenska", "vsv@rtvs.sk"),
+		Image("http://cdn.srv.rtvs.sk/a501/image/file/13/0006/wRe0.filan_boris_700.jpg"),
 	)
 	if err != nil {
 		log.Fatal(err)

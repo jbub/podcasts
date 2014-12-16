@@ -14,29 +14,29 @@ const (
 	ValueYes = "yes"
 )
 
-func ItunesAuthor(author string) func(f *Feed) error {
+func Author(author string) func(f *Feed) error {
 	return func(f *Feed) error {
 		f.Channel.Author = author
 		return nil
 	}
 }
 
-func ItunesBlock(f *Feed) error {
+func Block(f *Feed) error {
 	f.Channel.Block = ValueYes
 	return nil
 }
 
-func ItunesExplicit(f *Feed) error {
+func Explicit(f *Feed) error {
 	f.Channel.Explicit = ValueYes
 	return nil
 }
 
-func ItunesComplete(f *Feed) error {
+func Complete(f *Feed) error {
 	f.Channel.Complete = ValueYes
 	return nil
 }
 
-func ItunesNewFeedURL(newURL string) func(f *Feed) error {
+func NewFeedURL(newURL string) func(f *Feed) error {
 	return func(f *Feed) error {
 		u, err := url.Parse(newURL)
 		if err != nil {
@@ -50,23 +50,23 @@ func ItunesNewFeedURL(newURL string) func(f *Feed) error {
 	}
 }
 
-func ItunesSubtitle(subtitle string) func(f *Feed) error {
+func Subtitle(subtitle string) func(f *Feed) error {
 	return func(f *Feed) error {
 		f.Channel.Subtitle = subtitle
 		return nil
 	}
 }
 
-func ItunesSummary(summary string) func(f *Feed) error {
+func Summary(summary string) func(f *Feed) error {
 	return func(f *Feed) error {
 		f.Channel.Summary = summary
 		return nil
 	}
 }
 
-func ItunesOwner(name string, email string) func(f *Feed) error {
+func Owner(name string, email string) func(f *Feed) error {
 	return func(f *Feed) error {
-		f.Channel.Owner = &Owner{
+		f.Channel.Owner = &ItunesOwner{
 			Name:  name,
 			Email: email,
 		}
@@ -74,7 +74,7 @@ func ItunesOwner(name string, email string) func(f *Feed) error {
 	}
 }
 
-func ItunesImage(href string) func(f *Feed) error {
+func Image(href string) func(f *Feed) error {
 	return func(f *Feed) error {
 		u, err := url.Parse(href)
 		if err != nil {
@@ -83,7 +83,7 @@ func ItunesImage(href string) func(f *Feed) error {
 		if !u.IsAbs() {
 			return ErrInvalidImage
 		}
-		f.Channel.Image = &Image{
+		f.Channel.Image = &ItunesImage{
 			Href: href,
 		}
 		return nil

@@ -23,13 +23,13 @@ func (p PubDate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return nil
 }
 
-type Owner struct {
+type ItunesOwner struct {
 	XMLName xml.Name `xml:"itunes:owner"`
 	Name    string   `xml:"itunes:name"`
 	Email   string   `xml:"itunes:email"`
 }
 
-type Image struct {
+type ItunesImage struct {
 	XMLName xml.Name `xml:"itunes:image"`
 	Href    string   `xml:"href,attr"`
 }
@@ -61,7 +61,7 @@ type Item struct {
 	Subtitle        string        `xml:"itunes:subtitle,omitempty""`
 	Summary         string        `xml:"itunes:summary,omitempty""`
 	Enclosure       *Enclosure
-	Image           *Image
+	Image           *ItunesImage
 }
 
 type Channel struct {
@@ -78,8 +78,8 @@ type Channel struct {
 	NewFeedURL  string   `xml:"itunes:new-feed-url,omitempty"`
 	Subtitle    string   `xml:"itunes:subtitle,omitempty""`
 	Summary     string   `xml:"itunes:summary,omitempty""`
-	Owner       *Owner
-	Image       *Image
+	Owner       *ItunesOwner
+	Image       *ItunesImage
 	Items       []*Item
 	Categories  []*Category
 }

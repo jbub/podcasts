@@ -35,15 +35,15 @@ func main() {
     feed := p.Feed()
 
     err := feed.SetOptions(
-        podcasts.ItunesAuthor("Boris Filan"),
-        podcasts.ItunesBlock,
-        podcasts.ItunesExplicit,
-        podcasts.ItunesComplete,
-        podcasts.ItunesNewFeedURL("http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana"),
-        podcasts.ItunesSubtitle("Zábavný program pre každého, komu to páli."),
-        podcasts.ItunesSummary("Zábavný program pre každého, komu to páli."),
-        podcasts.ItunesOwner("Rozhlas a televízia Slovenska", "vsv@rtvs.sk"),
-        podcasts.ItunesImage("http://cdn.srv.rtvs.sk/a501/image/file/13/0006/wRe0.filan_boris_700.jpg"),
+        podcasts.Author("Boris Filan"),
+        podcasts.Block,
+        podcasts.IExplicit,
+        podcasts.Complete,
+        podcasts.NewFeedURL("http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana"),
+        podcasts.Subtitle("Zábavný program pre každého, komu to páli."),
+        podcasts.Summary("Zábavný program pre každého, komu to páli."),
+        podcasts.Owner("Rozhlas a televízia Slovenska", "vsv@rtvs.sk"),
+        podcasts.Image("http://cdn.srv.rtvs.sk/a501/image/file/13/0006/wRe0.filan_boris_700.jpg"),
     )
 
     if err != nil {
