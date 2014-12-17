@@ -13,7 +13,7 @@ func (p *Podcast) AddItem(item *Item) {
 	p.items = append(p.items, item)
 }
 
-func (p *Podcast) Feed() *Feed {
+func (p *Podcast) Feed(options ...func(f *Feed) error) (*Feed, error) {
 	f := &Feed{
 		Xmlns:   rssXmlns,
 		Version: rssVersion,
@@ -26,5 +26,5 @@ func (p *Podcast) Feed() *Feed {
 			Items:       p.items,
 		},
 	}
-	return f
+	return f, f.SetOptions(options...)
 }

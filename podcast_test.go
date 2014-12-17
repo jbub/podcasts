@@ -31,8 +31,7 @@ func (s *PodcastsTestSuite) TestPodcast() {
 			Type:   "MP3",
 		},
 	})
-	feed := p.Feed()
-	err := feed.SetOptions(
+	feed, err := p.Feed(
 		Author("Boris Filan"),
 		Block,
 		Explicit,
