@@ -32,7 +32,7 @@ func main() {
         },
     })
 
-    feed := p.Feed(
+    feed, err := p.Feed(
         podcasts.Author("Boris Filan"),
         podcasts.Block,
         podcasts.Explicit,
