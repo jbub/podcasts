@@ -1,6 +1,8 @@
 podcasts
 ========
 
+Podcast generator written in Go.
+
 ```go
 package main
 

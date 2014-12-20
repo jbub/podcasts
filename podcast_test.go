@@ -1,8 +1,6 @@
 package podcasts
 
 import (
-	"log"
-	"os"
 	"testing"
 	"time"
 
@@ -21,6 +19,7 @@ func (s *PodcastsTestSuite) TestPodcast() {
 		Link:        "http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana",
 		Copyright:   "2013 RTVS - Rozhlas a televízia Slovenska",
 	}
+
 	p.AddItem(&Item{
 		Title:   "Epizoda 1",
 		GUID:    "http://slovensko.rtvs.sk/clanok/ludia/experti",
@@ -31,6 +30,7 @@ func (s *PodcastsTestSuite) TestPodcast() {
 			Type:   "MP3",
 		},
 	})
+
 	feed, err := p.Feed(
 		Author("Boris Filan"),
 		Block,
@@ -42,10 +42,9 @@ func (s *PodcastsTestSuite) TestPodcast() {
 		Owner("Rozhlas a televízia Slovenska", "vsv@rtvs.sk"),
 		Image("http://cdn.srv.rtvs.sk/a501/image/file/13/0006/wRe0.filan_boris_700.jpg"),
 	)
-	if err != nil {
-		log.Fatal(err)
-	}
-	feed.Write(os.Stdout)
+
+	s.NotNil(feed)
+	s.Nil(err)
 }
 
 func TestPodcastsTestSuite(t *testing.T) {
