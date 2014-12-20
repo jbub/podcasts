@@ -1,5 +1,6 @@
 package podcasts
 
+// Podcast represents a web podcast.
 type Podcast struct {
 	Title       string
 	Description string
@@ -9,10 +10,12 @@ type Podcast struct {
 	items       []*Item
 }
 
+// AddItem adds an item to the podcast.
 func (p *Podcast) AddItem(item *Item) {
 	p.items = append(p.items, item)
 }
 
+// Feed creates a new feed for current podcast.
 func (p *Podcast) Feed(options ...func(f *Feed) error) (*Feed, error) {
 	f := &Feed{
 		Xmlns:   rssXmlns,
