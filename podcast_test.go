@@ -1,13 +1,14 @@
 package podcasts
 
 import (
+	"bytes"
 	"encoding/xml"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
 )
 
-type ValidFeed struct {
+type validFeed struct {
 	Channel struct {
 		Title string `xml:"title"`
 	} `xml:"channel"`
@@ -15,29 +16,46 @@ type ValidFeed struct {
 
 type PodcastsTestSuite struct {
 	suite.Suite
+	podcast *Podcast
 }
 
-func (s *PodcastsTestSuite) TestPodcastFeed() {
+func (s *PodcastsTestSuite) SetupTest() {
 	title := "test TITLE"
-	p := &Podcast{
-		Title:       title,
-		Description: "Zábavný program pre každého, komu to páli.",
-		Language:    "SK",
-		Link:        "http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana",
-		Copyright:   "2013 RTVS - Rozhlas a televízia Slovenska",
-	}
+	desc := "description"
+	lang := "lang"
+	link := "link"
+	copyright := "copyright"
 
-	feed, err := p.Feed()
+	s.podcast = &Podcast{
+		Title:       title,
+		Description: desc,
+		Language:    lang,
+		Link:        link,
+		Copyright:   copyright,
+	}
+}
+
+func (s *PodcastsTestSuite) TestPodcastFeedXml() {
+	feed, err := s.podcast.Feed()
 	s.Nil(err)
 
 	data, err := feed.XML()
 	s.Nil(err)
 
-	v := ValidFeed{}
-	err = xml.Unmarshal([]byte(data), &v)
+	vf := validFeed{}
+	err = xml.Unmarshal([]byte(data), &vf)
 
 	s.Nil(err)
-	s.Equal(title, v.Channel.Title)
+	s.Equal(s.podcast.Title, vf.Channel.Title)
+}
+
+func (s *PodcastsTestSuite) TestPodcastFeedWrite() {
+	feed, err := s.podcast.Feed()
+	s.Nil(err)
+
+	var b bytes.Buffer
+	err = feed.Write(&b)
+	s.Nil(err)
 }
 
 func TestPodcastsTestSuite(t *testing.T) {

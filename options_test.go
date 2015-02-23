@@ -54,6 +54,13 @@ func (s *OptionsTestSuite) TestNewFeedURL() {
 	s.Equal(newURL, s.feed.Channel.NewFeedURL)
 }
 
+func (s *OptionsTestSuite) TestNewFeedURLInvalid() {
+	newURL := "invalid url"
+	err := NewFeedURL(newURL)(s.feed)
+
+	s.NotNil(err)
+}
+
 func (s *OptionsTestSuite) TestSubtitle() {
 	subtitle := "this is subtitle"
 	err := Subtitle(subtitle)(s.feed)
@@ -86,6 +93,13 @@ func (s *OptionsTestSuite) TestImage() {
 
 	s.Nil(err)
 	s.Equal(href, s.feed.Channel.Image.Href)
+}
+
+func (s *OptionsTestSuite) TestImageInvalid() {
+	href := "invalid url"
+	err := Image(href)(s.feed)
+
+	s.NotNil(err)
 }
 
 func TestOptionsTestSuite(t *testing.T) {

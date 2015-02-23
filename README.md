@@ -54,7 +54,7 @@ func main() {
         podcasts.Block,
         podcasts.Explicit,
         podcasts.Complete,
-        podcasts.NewFeedURL("http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana"),
+        podcasts.NewFeedURL("http://www.example-podcast.com/new-feed-url"),
         podcasts.Subtitle("This is my very simple podcast subtitle."),
         podcasts.Summary("This is my very simple podcast summary."),
         podcasts.Owner("Podcast Owner", "owner@example-podcast.com"),
@@ -68,5 +68,4 @@ func main() {
     // finally write the xml
     feed.Write(os.Stdout)
 }
-
 ```
