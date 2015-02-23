@@ -1,50 +1,43 @@
 package podcasts
 
 import (
+	"encoding/xml"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/suite"
 )
+
+type ValidFeed struct {
+	Channel struct {
+		Title string `xml:"title"`
+	} `xml:"channel"`
+}
 
 type PodcastsTestSuite struct {
 	suite.Suite
 }
 
-func (s *PodcastsTestSuite) TestPodcast() {
+func (s *PodcastsTestSuite) TestPodcastFeed() {
+	title := "test TITLE"
 	p := &Podcast{
-		Title:       "Palenica borisa filana",
+		Title:       title,
 		Description: "Zábavný program pre každého, komu to páli.",
 		Language:    "SK",
 		Link:        "http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana",
 		Copyright:   "2013 RTVS - Rozhlas a televízia Slovenska",
 	}
 
-	p.AddItem(&Item{
-		Title:   "Epizoda 1",
-		GUID:    "http://slovensko.rtvs.sk/clanok/ludia/experti",
-		PubDate: &PubDate{time.Now()},
-		Enclosure: &Enclosure{
-			URL:    "http://static-media.rtvs.sk/items/223/546de29065c77.mp3",
-			Length: "321",
-			Type:   "MP3",
-		},
-	})
-
-	feed, err := p.Feed(
-		Author("Boris Filan"),
-		Block,
-		Explicit,
-		Complete,
-		NewFeedURL("http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana"),
-		Subtitle("Zábavný program pre každého, komu to páli."),
-		Summary("Zábavný program pre každého, komu to páli."),
-		Owner("Rozhlas a televízia Slovenska", "vsv@rtvs.sk"),
-		Image("http://cdn.srv.rtvs.sk/a501/image/file/13/0006/wRe0.filan_boris_700.jpg"),
-	)
-
-	s.NotNil(feed)
+	feed, err := p.Feed()
 	s.Nil(err)
+
+	data, err := feed.XML()
+	s.Nil(err)
+
+	v := ValidFeed{}
+	err = xml.Unmarshal([]byte(data), &v)
+
+	s.Nil(err)
+	s.Equal(title, v.Channel.Title)
 }
 
 func TestPodcastsTestSuite(t *testing.T) {

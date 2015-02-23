@@ -1,33 +1,25 @@
 package podcasts
 
 import (
+	"encoding/xml"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/suite"
 )
 
 type FeedTestSuite struct {
 	suite.Suite
-	feed *Feed
 }
 
-func (s *FeedTestSuite) SetupTest() {
-	s.feed = &Feed{
-		Xmlns:   rssXmlns,
-		Version: rssVersion,
-		Channel: &Channel{
-			Title:       p.Title,
-			Description: p.Description,
-			Link:        p.Link,
-			Copyright:   p.Copyright,
-			Language:    p.Language,
-			Items:       p.items,
-		},
-	}
-}
+func (s *FeedTestSuite) TestPubDateMarshalling() {
+	t := time.Date(2015, time.January, 1, 0, 0, 0, 0, time.UTC)
+	pd := PubDate{t}
+	expected := "<PubDate>Thu, 01 Jan 2015 00:00:00 +0000</PubDate>"
+	out, err := xml.Marshal(pd)
 
-func (s *FeedTestSuite) TestFeed() {
-
+	s.Nil(err)
+	s.Equal(expected, string(out))
 }
 
 func TestFeedTestSuite(t *testing.T) {

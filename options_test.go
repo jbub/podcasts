@@ -71,7 +71,7 @@ func (s *OptionsTestSuite) TestSummary() {
 }
 
 func (s *OptionsTestSuite) TestOwner() {
-	name := "eve"
+	name := "anabelle"
 	email := "test@test.com"
 	err := Owner(name, email)(s.feed)
 

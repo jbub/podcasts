@@ -15,41 +15,57 @@ import (
 )
 
 func main() {
+    // initialize the podcast
     p := &podcasts.Podcast{
-        Title:       "Palenica borisa filana",
-        Description: "Zábavný program pre každého, komu to páli.",
-        Language:    "SK",
-        Link:        "http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana",
-        Copyright:   "2013 RTVS - Rozhlas a televízia Slovenska",
+        Title:       "My podcast",
+        Description: "This is my very simple podcast.",
+        Language:    "EN",
+        Link:        "http://www.example-podcast.com/my-podcast",
+        Copyright:   "2015 My podcast copyright",
     }
 
+    // add first podcast item
     p.AddItem(&podcasts.Item{
-        Title:   "Epizoda 1",
-        GUID:    "http://slovensko.rtvs.sk/clanok/ludia/experti",
+        Title:   "Episode 1",
+        GUID:    "http://www.example-podcast.com/my-podcast/1/episode-one",
         PubDate: &podcasts.PubDate{time.Now()},
         Enclosure: &podcasts.Enclosure{
-            URL:    "http://static-media.rtvs.sk/items/223/546de29065c77.mp3",
-            Length: "321",
+            URL:    "http://www.example-podcast.com/my-podcast/1/episode.mp3",
+            Length: "12312",
             Type:   "MP3",
         },
     })
 
+    // add second podcast item
+    p.AddItem(&podcasts.Item{
+        Title:   "Episode 2",
+        GUID:    "http://www.example-podcast.com/my-podcast/2/episode-two",
+        PubDate: &podcasts.PubDate{time.Now()},
+        Enclosure: &podcasts.Enclosure{
+            URL:    "http://www.example-podcast.com/my-podcast/2/episode.mp3",
+            Length: "46732",
+            Type:   "MP3",
+        },
+    })
+
+    // get podcast feed, you can pass options to customize it
     feed, err := p.Feed(
-        podcasts.Author("Boris Filan"),
+        podcasts.Author("Author Name"),
         podcasts.Block,
         podcasts.Explicit,
         podcasts.Complete,
         podcasts.NewFeedURL("http://www.rtvs.sk/radio/relacie/detail/palenica-borisa-filana"),
-        podcasts.Subtitle("Zábavný program pre každého, komu to páli."),
-        podcasts.Summary("Zábavný program pre každého, komu to páli."),
-        podcasts.Owner("Rozhlas a televízia Slovenska", "vsv@rtvs.sk"),
-        podcasts.Image("http://cdn.srv.rtvs.sk/a501/image/file/13/0006/wRe0.filan_boris_700.jpg"),
+        podcasts.Subtitle("This is my very simple podcast subtitle."),
+        podcasts.Summary("This is my very simple podcast summary."),
+        podcasts.Owner("Podcast Owner", "owner@example-podcast.com"),
+        podcasts.Image("http://www.example-podcast.com/my-podcast.jpg"),
     )
 
     if err != nil {
         log.Fatal(err)
     }
 
+    // finally write the xml
     feed.Write(os.Stdout)
 }
 
