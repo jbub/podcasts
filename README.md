@@ -5,6 +5,20 @@
 
 Podcast generator written in Go.
 
+## Install
+
+```bash
+go get github.com/jbub/podcasts
+```
+
+## Docs
+
+```bash
+http://godoc.org/github.com/jbub/podcasts
+```
+
+## Example usage
+
 ```go
 package main
 
@@ -63,11 +77,12 @@ func main() {
         podcasts.Image("http://www.example-podcast.com/my-podcast.jpg"),
     )
 
+    // handle error
     if err != nil {
         log.Fatal(err)
     }
 
-    // finally write the xml
+    // finally write the xml to any io.Writer
     feed.Write(os.Stdout)
 }
 ```
