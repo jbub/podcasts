@@ -13,9 +13,7 @@ go get github.com/jbub/podcasts
 
 ## Docs
 
-```bash
 http://godoc.org/github.com/jbub/podcasts
-```
 
 ## Example usage
 
