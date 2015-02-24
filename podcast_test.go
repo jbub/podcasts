@@ -4,8 +4,40 @@ import (
 	"bytes"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/suite"
+)
+
+var (
+	validItems = []struct {
+		Title           string
+		GUID            string
+		Time            time.Time
+		ExpectedPubDate string
+		EnclosureURL    string
+		EnclosureLength string
+		EnclosureType   string
+	}{
+		{
+			Title:           "Item 1",
+			GUID:            "http://www.example-podcast.com/my-podcast/1/episode",
+			Time:            time.Date(2015, time.January, 1, 0, 0, 0, 0, time.UTC),
+			ExpectedPubDate: "Thu, 01 Jan 2015 00:00:00 +0000",
+			EnclosureURL:    "http://www.example-podcast.com/my-podcast/1/episode-one",
+			EnclosureLength: "1234",
+			EnclosureType:   "MP3",
+		},
+		{
+			Title:           "Item 2",
+			GUID:            "http://www.example-podcast.com/my-podcast/2/episode",
+			Time:            time.Date(2015, time.January, 2, 0, 0, 0, 0, time.UTC),
+			ExpectedPubDate: "Fri, 02 Jan 2015 00:00:00 +0000",
+			EnclosureURL:    "http://www.example-podcast.com/my-podcast/2/episode-two",
+			EnclosureLength: "56445",
+			EnclosureType:   "WAV",
+		},
+	}
 )
 
 type PodcastsTestSuite struct {
@@ -151,6 +183,41 @@ func (s *PodcastsTestSuite) TestContainsImageElement() {
 
 	s.Nil(err)
 	s.Contains(data, fmt.Sprintf(`<itunes:image href="%s"></itunes:image>`, image))
+}
+
+type testItem struct {
+	Item            *Item
+	ExpectedPubDate string
+}
+
+func (s *PodcastsTestSuite) TestContainsItemElements() {
+	for _, item := range validItems {
+		s.podcast.AddItem(&Item{
+			Title:   item.Title,
+			GUID:    item.GUID,
+			PubDate: &PubDate{item.Time},
+			Enclosure: &Enclosure{
+				URL:    item.EnclosureURL,
+				Length: item.EnclosureLength,
+				Type:   item.EnclosureType,
+			},
+		})
+	}
+
+	feed, err := s.podcast.Feed()
+	s.Nil(err)
+
+	data, err := feed.XML()
+	s.Nil(err)
+
+	for _, item := range validItems {
+		s.Contains(data, "<item>")
+		s.Contains(data, fmt.Sprintf("<title>%s</title>", item.Title))
+		s.Contains(data, fmt.Sprintf("<guid>%s</guid>", item.GUID))
+		s.Contains(data, fmt.Sprintf("<pubDate>%s</pubDate>", item.ExpectedPubDate))
+		s.Contains(data, fmt.Sprintf(`<enclosure url="%s" length="%s" type="%s"></enclosure>`, item.EnclosureURL, item.EnclosureLength, item.EnclosureType))
+		s.Contains(data, "</item>")
+	}
 }
 
 func (s *PodcastsTestSuite) TestPodcastFeedWrite() {
