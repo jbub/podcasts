@@ -84,3 +84,42 @@ func main() {
     feed.Write(os.Stdout)
 }
 ```
+
+Which gives us this XML output:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+  <channel>
+    <title>My podcast</title>
+    <link>http://www.example-podcast.com/my-podcast</link>
+    <copyright>2015 My podcast copyright</copyright>
+    <language>EN</language>
+    <description>This is my very simple podcast.</description>
+    <itunes:author>Author Name</itunes:author>
+    <itunes:block>yes</itunes:block>
+    <itunes:explicit>yes</itunes:explicit>
+    <itunes:complete>yes</itunes:complete>
+    <itunes:new-feed-url>http://www.example-podcast.com/new-feed-url</itunes:new-feed-url>
+    <itunes:subtitle>This is my very simple podcast subtitle.</itunes:subtitle>
+    <itunes:summary>This is my very simple podcast summary.</itunes:summary>
+    <itunes:owner>
+      <itunes:name>Podcast Owner</itunes:name>
+      <itunes:email>owner@example-podcast.com</itunes:email>
+    </itunes:owner>
+    <itunes:image href="http://www.example-podcast.com/my-podcast.jpg"></itunes:image>
+    <item>
+      <title>Episode 1</title>
+      <guid>http://www.example-podcast.com/my-podcast/1/episode-one</guid>
+      <pubDate>Wed, 25 Feb 2015 10:43:17 +0100</pubDate>
+      <enclosure url="http://www.example-podcast.com/my-podcast/1/episode.mp3" length="12312" type="MP3"></enclosure>
+    </item>
+    <item>
+      <title>Episode 2</title>
+      <guid>http://www.example-podcast.com/my-podcast/2/episode-two</guid>
+      <pubDate>Wed, 25 Feb 2015 10:43:17 +0100</pubDate>
+      <enclosure url="http://www.example-podcast.com/my-podcast/2/episode.mp3" length="46732" type="MP3"></enclosure>
+    </item>
+  </channel>
+</rss>
+```
