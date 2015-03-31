@@ -1,7 +1,4 @@
-# podcasts
-
-[![Build Status](https://travis-ci.org/jbub/podcasts.svg)](https://travis-ci.org/jbub/podcasts)
-[![Coverage Status](https://coveralls.io/repos/jbub/podcasts/badge.png)](https://coveralls.io/r/jbub/podcasts)
+# podcasts [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/jbub/podcasts) [![Build Status](http://img.shields.io/travis/jbub/podcasts.svg?style=flat-square)](https://travis-ci.org/jbub/podcasts) [![Coverage Status](http://img.shields.io/coveralls/jbub/podcasts.svg?style=flat-square)](https://coveralls.io/r/jbub/podcasts)
 
 Podcast generator written in Go.
 
