@@ -59,14 +59,14 @@ type Item struct {
 	Title           string        `xml:"title"`
 	GUID            string        `xml:"guid"`
 	PubDate         *PubDate      `xml:"pubDate"`
-	Author          string        `xml:"itunes:author,omitempty""`
+	Author          string        `xml:"itunes:author,omitempty"`
 	Block           string        `xml:"itunes:block,omitempty"`
-	Duration        time.Duration `xml:"itunes:duration,omitempty""`
+	Duration        time.Duration `xml:"itunes:duration,omitempty"`
 	Explicit        string        `xml:"itunes:explicit,omitempty"`
 	ClosedCaptioned string        `xml:"itunes:isClosedCaptioned,omitempty"`
 	Order           int           `xml:"itunes:order,omitempty"`
-	Subtitle        string        `xml:"itunes:subtitle,omitempty""`
-	Summary         string        `xml:"itunes:summary,omitempty""`
+	Subtitle        string        `xml:"itunes:subtitle,omitempty"`
+	Summary         string        `xml:"itunes:summary,omitempty"`
 	Enclosure       *Enclosure
 	Image           *ItunesImage
 }
@@ -79,13 +79,13 @@ type Channel struct {
 	Copyright   string   `xml:"copyright"`
 	Language    string   `xml:"language"`
 	Description string   `xml:"description"`
-	Author      string   `xml:"itunes:author,omitempty""`
+	Author      string   `xml:"itunes:author,omitempty"`
 	Block       string   `xml:"itunes:block,omitempty"`
 	Explicit    string   `xml:"itunes:explicit,omitempty"`
 	Complete    string   `xml:"itunes:complete,omitempty"`
 	NewFeedURL  string   `xml:"itunes:new-feed-url,omitempty"`
-	Subtitle    string   `xml:"itunes:subtitle,omitempty""`
-	Summary     string   `xml:"itunes:summary,omitempty""`
+	Subtitle    string   `xml:"itunes:subtitle,omitempty"`
+	Summary     string   `xml:"itunes:summary,omitempty"`
 	Owner       *ItunesOwner
 	Image       *ItunesImage
 	Items       []*Item
