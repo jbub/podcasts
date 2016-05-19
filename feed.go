@@ -1,6 +1,7 @@
 package podcasts
 
 import (
+	"bytes"
 	"encoding/xml"
 	"io"
 	"time"
@@ -112,12 +113,11 @@ func (f *Feed) SetOptions(options ...func(f *Feed) error) error {
 
 // XML marshalls feed to XML string.
 func (f *Feed) XML() (string, error) {
-	data, err := xml.MarshalIndent(f, "", "  ")
-	if err != nil {
+	var buf bytes.Buffer
+	if err := f.Write(&buf); err != nil {
 		return "", err
 	}
-	s := xml.Header + string(data)
-	return s, nil
+	return buf.String(), nil
 }
 
 // Write writes marshalled XML to the given writer.
