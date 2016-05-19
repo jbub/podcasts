@@ -54,39 +54,45 @@ type Enclosure struct {
 	Type    string   `xml:"type,attr"`
 }
 
+// ItunesSummary represents a summary of a Channel or Item that may contain
+// embedded HTML such as <a href="...">...</a> links.
+type ItunesSummary struct {
+	Value string `xml:",cdata"`
+}
+
 // Item represents item of given channel.
 type Item struct {
-	XMLName         xml.Name      `xml:"item"`
-	Title           string        `xml:"title"`
-	GUID            string        `xml:"guid"`
-	PubDate         *PubDate      `xml:"pubDate"`
-	Author          string        `xml:"itunes:author,omitempty"`
-	Block           string        `xml:"itunes:block,omitempty"`
-	Duration        time.Duration `xml:"itunes:duration,omitempty"`
-	Explicit        string        `xml:"itunes:explicit,omitempty"`
-	ClosedCaptioned string        `xml:"itunes:isClosedCaptioned,omitempty"`
-	Order           int           `xml:"itunes:order,omitempty"`
-	Subtitle        string        `xml:"itunes:subtitle,omitempty"`
-	Summary         string        `xml:"itunes:summary,omitempty"`
+	XMLName         xml.Name       `xml:"item"`
+	Title           string         `xml:"title"`
+	GUID            string         `xml:"guid"`
+	PubDate         *PubDate       `xml:"pubDate"`
+	Author          string         `xml:"itunes:author,omitempty"`
+	Block           string         `xml:"itunes:block,omitempty"`
+	Duration        time.Duration  `xml:"itunes:duration,omitempty"`
+	Explicit        string         `xml:"itunes:explicit,omitempty"`
+	ClosedCaptioned string         `xml:"itunes:isClosedCaptioned,omitempty"`
+	Order           int            `xml:"itunes:order,omitempty"`
+	Subtitle        string         `xml:"itunes:subtitle,omitempty"`
+	Summary         *ItunesSummary `xml:"itunes:summary,omitempty"`
 	Enclosure       *Enclosure
 	Image           *ItunesImage
 }
 
 // Channel represents a RSS channel for given podcast.
 type Channel struct {
-	XMLName     xml.Name `xml:"channel"`
-	Title       string   `xml:"title"`
-	Link        string   `xml:"link"`
-	Copyright   string   `xml:"copyright"`
-	Language    string   `xml:"language"`
-	Description string   `xml:"description"`
-	Author      string   `xml:"itunes:author,omitempty"`
-	Block       string   `xml:"itunes:block,omitempty"`
-	Explicit    string   `xml:"itunes:explicit,omitempty"`
-	Complete    string   `xml:"itunes:complete,omitempty"`
-	NewFeedURL  string   `xml:"itunes:new-feed-url,omitempty"`
-	Subtitle    string   `xml:"itunes:subtitle,omitempty"`
-	Summary     string   `xml:"itunes:summary,omitempty"`
+	XMLName     xml.Name       `xml:"channel"`
+	Title       string         `xml:"title"`
+	Link        string         `xml:"link"`
+	Copyright   string         `xml:"copyright"`
+	Language    string         `xml:"language"`
+	Description string         `xml:"description"`
+	Author      string         `xml:"itunes:author,omitempty"`
+	Block       string         `xml:"itunes:block,omitempty"`
+	Explicit    string         `xml:"itunes:explicit,omitempty"`
+	Complete    string         `xml:"itunes:complete,omitempty"`
+	NewFeedURL  string         `xml:"itunes:new-feed-url,omitempty"`
+	Subtitle    string         `xml:"itunes:subtitle,omitempty"`
+	Summary     *ItunesSummary `xml:"itunes:summary,omitempty"`
 	Owner       *ItunesOwner
 	Image       *ItunesImage
 	Items       []*Item

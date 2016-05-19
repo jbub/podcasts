@@ -70,11 +70,11 @@ func (s *OptionsTestSuite) TestSubtitle() {
 }
 
 func (s *OptionsTestSuite) TestSummary() {
-	summary := "this is summary"
+	summary := `this is summary. <a href="http://example.com/more">more</a>`
 	err := Summary(summary)(s.feed)
 
 	s.Nil(err)
-	s.Equal(summary, s.feed.Channel.Summary)
+	s.Equal(summary, s.feed.Channel.Summary.Value)
 }
 
 func (s *OptionsTestSuite) TestOwner() {

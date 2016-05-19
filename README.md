@@ -99,7 +99,7 @@ Which gives us this XML output:
     <itunes:complete>yes</itunes:complete>
     <itunes:new-feed-url>http://www.example-podcast.com/new-feed-url</itunes:new-feed-url>
     <itunes:subtitle>This is my very simple podcast subtitle.</itunes:subtitle>
-    <itunes:summary>This is my very simple podcast summary.</itunes:summary>
+    <itunes:summary><![CDATA[This is my very simple podcast summary.]]></itunes:summary>
     <itunes:owner>
       <itunes:name>Podcast Owner</itunes:name>
       <itunes:email>owner@example-podcast.com</itunes:email>
@@ -108,13 +108,13 @@ Which gives us this XML output:
     <item>
       <title>Episode 1</title>
       <guid>http://www.example-podcast.com/my-podcast/1/episode-one</guid>
-      <pubDate>Wed, 25 Feb 2015 10:43:17 +0100</pubDate>
+      <pubDate>Thu, 19 May 2016 10:47:39 +0100</pubDate>
       <enclosure url="http://www.example-podcast.com/my-podcast/1/episode.mp3" length="12312" type="MP3"></enclosure>
     </item>
     <item>
       <title>Episode 2</title>
       <guid>http://www.example-podcast.com/my-podcast/2/episode-two</guid>
-      <pubDate>Wed, 25 Feb 2015 10:43:17 +0100</pubDate>
+      <pubDate>Thu, 19 May 2016 10:47:39 +0100</pubDate>
       <enclosure url="http://www.example-podcast.com/my-podcast/2/episode.mp3" length="46732" type="MP3"></enclosure>
     </item>
   </channel>
