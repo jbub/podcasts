@@ -70,7 +70,7 @@ func Subtitle(subtitle string) func(f *Feed) error {
 // Summary sets itunes:summary of given feed.
 func Summary(summary string) func(f *Feed) error {
 	return func(f *Feed) error {
-		f.Channel.Summary = summary
+		f.Channel.Summary = &ItunesSummary{summary}
 		return nil
 	}
 }

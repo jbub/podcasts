@@ -158,11 +158,11 @@ func (s *PodcastsTestSuite) TestContainsSubtitleElement() {
 }
 
 func (s *PodcastsTestSuite) TestContainsSummaryElement() {
-	summary := "Test Subtitle"
+	summary := `Test Summary with <a href="http://www.example.com/">link</a>`
 	data, err := getPodcastXML(s.podcast, Summary(summary))
 
 	s.Nil(err)
-	s.Contains(data, fmt.Sprintf("<itunes:summary>%s</itunes:summary>", summary))
+	s.Contains(data, fmt.Sprintf("<itunes:summary><![CDATA[%s]]></itunes:summary>", summary))
 }
 
 func (s *PodcastsTestSuite) TestContainsOwnerElement() {
