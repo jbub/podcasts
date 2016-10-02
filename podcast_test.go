@@ -185,11 +185,6 @@ func (s *PodcastsTestSuite) TestContainsImageElement() {
 	s.Contains(data, fmt.Sprintf(`<itunes:image href="%s"></itunes:image>`, image))
 }
 
-type testItem struct {
-	Item            *Item
-	ExpectedPubDate string
-}
-
 func (s *PodcastsTestSuite) TestContainsItemElements() {
 	for _, item := range validItems {
 		s.podcast.AddItem(&Item{

@@ -20,10 +20,13 @@ type PubDate struct {
 
 // MarshalXML marshalls pubdate using the rfc2822 time format.
 func (p PubDate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	e.EncodeToken(start)
-	e.EncodeToken(xml.CharData([]byte(p.Format(rfc2822))))
-	e.EncodeToken(xml.EndElement{start.Name})
-	return nil
+	if err := e.EncodeToken(start); err != nil {
+		return err
+	}
+	if err := e.EncodeToken(xml.CharData([]byte(p.Format(rfc2822)))); err != nil {
+		return err
+	}
+	return e.EncodeToken(xml.EndElement{Name: start.Name})
 }
 
 // ItunesOwner represents the itunes:owner of given channel.
