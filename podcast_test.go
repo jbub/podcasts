@@ -3,229 +3,315 @@ package podcasts
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"testing"
 	"time"
-
-	"github.com/stretchr/testify/suite"
 )
 
 var (
 	validItems = []struct {
-		Title           string
-		GUID            string
-		Time            time.Time
-		ExpectedPubDate string
-		EnclosureURL    string
-		EnclosureLength string
-		EnclosureType   string
+		title           string
+		guid            string
+		pubDate         time.Time
+		pubDateStr      string
+		enclosureURL    string
+		enclosureLength string
+		enclosureType   string
 	}{
 		{
-			Title:           "Item 1",
-			GUID:            "http://www.example-podcast.com/my-podcast/1/episode",
-			Time:            time.Date(2015, time.January, 1, 0, 0, 0, 0, time.UTC),
-			ExpectedPubDate: "Thu, 01 Jan 2015 00:00:00 +0000",
-			EnclosureURL:    "http://www.example-podcast.com/my-podcast/1/episode-one",
-			EnclosureLength: "1234",
-			EnclosureType:   "MP3",
+			title:           "Item 1",
+			guid:            "http://www.example-podcast.com/my-podcast/1/episode",
+			pubDate:         time.Date(2015, time.January, 1, 0, 0, 0, 0, time.UTC),
+			pubDateStr:      "Thu, 01 Jan 2015 00:00:00 +0000",
+			enclosureURL:    "http://www.example-podcast.com/my-podcast/1/episode-one",
+			enclosureLength: "1234",
+			enclosureType:   "MP3",
 		},
 		{
-			Title:           "Item 2",
-			GUID:            "http://www.example-podcast.com/my-podcast/2/episode",
-			Time:            time.Date(2015, time.January, 2, 0, 0, 0, 0, time.UTC),
-			ExpectedPubDate: "Fri, 02 Jan 2015 00:00:00 +0000",
-			EnclosureURL:    "http://www.example-podcast.com/my-podcast/2/episode-two",
-			EnclosureLength: "56445",
-			EnclosureType:   "WAV",
+			title:           "Item 2",
+			guid:            "http://www.example-podcast.com/my-podcast/2/episode",
+			pubDate:         time.Date(2015, time.January, 2, 0, 0, 0, 0, time.UTC),
+			pubDateStr:      "Fri, 02 Jan 2015 00:00:00 +0000",
+			enclosureURL:    "http://www.example-podcast.com/my-podcast/2/episode-two",
+			enclosureLength: "56445",
+			enclosureType:   "WAV",
 		},
 	}
 )
 
-type PodcastsTestSuite struct {
-	suite.Suite
-	podcast *Podcast
-}
-
-func (s *PodcastsTestSuite) SetupTest() {
-	s.podcast = &Podcast{
-		Title:       "my podcast title",
-		Description: "my podcast description",
-		Language:    "my podcast lang",
-		Link:        "my podcast link",
-		Copyright:   "my podcast copyright",
+func TestContainsXmlHeader(t *testing.T) {
+	podcast := &Podcast{}
+	data, err := getPodcastXML(podcast)
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := `<?xml version="1.0" encoding="UTF-8"?>`
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
 	}
 }
 
-func (s *PodcastsTestSuite) TestContainsXmlHeader() {
-	data, err := getPodcastXML(s.podcast)
-
-	s.Nil(err)
-	s.Contains(data, `<?xml version="1.0" encoding="UTF-8"?>`)
+func TestContainsRssElement(t *testing.T) {
+	podcast := &Podcast{}
+	data, err := getPodcastXML(podcast)
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := `<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">`
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsRssElement() {
-	data, err := getPodcastXML(s.podcast)
-
-	s.Nil(err)
-	s.Contains(data, `<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">`)
+func TestContainsChannelElement(t *testing.T) {
+	podcast := &Podcast{}
+	data, err := getPodcastXML(podcast)
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := `<channel>`
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
+	want = `</channel>`
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsChannelElement() {
-	data, err := getPodcastXML(s.podcast)
-
-	s.Nil(err)
-	s.Contains(data, `<channel>`)
-	s.Contains(data, `</channel>`)
+func TestContainsTitleElement(t *testing.T) {
+	podcast := &Podcast{Title: "my title"}
+	data, err := getPodcastXML(podcast)
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := fmt.Sprintf("<title>%v</title>", podcast.Title)
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsTitleElement() {
-	data, err := getPodcastXML(s.podcast)
-
-	s.Nil(err)
-	s.Contains(data, fmt.Sprintf("<title>%s</title>", s.podcast.Title))
+func TestContainsDescriptionElement(t *testing.T) {
+	podcast := &Podcast{Description: "my description"}
+	data, err := getPodcastXML(podcast)
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := fmt.Sprintf("<description>%v</description>", podcast.Description)
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsDescriptionElement() {
-	data, err := getPodcastXML(s.podcast)
-
-	s.Nil(err)
-	s.Contains(data, fmt.Sprintf("<description>%s</description>", s.podcast.Description))
+func TestContainsLanguageElement(t *testing.T) {
+	podcast := &Podcast{Language: "en"}
+	data, err := getPodcastXML(podcast)
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := fmt.Sprintf("<language>%v</language>", podcast.Language)
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsLanguageElement() {
-	data, err := getPodcastXML(s.podcast)
-
-	s.Nil(err)
-	s.Contains(data, fmt.Sprintf("<language>%s</language>", s.podcast.Language))
+func TestContainsLinkElement(t *testing.T) {
+	podcast := &Podcast{Link: "https://example.com"}
+	data, err := getPodcastXML(podcast)
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := fmt.Sprintf("<link>%v</link>", podcast.Link)
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsLinkElement() {
-	data, err := getPodcastXML(s.podcast)
-
-	s.Nil(err)
-	s.Contains(data, fmt.Sprintf("<link>%s</link>", s.podcast.Link))
+func TestContainsCopyrightElement(t *testing.T) {
+	podcast := &Podcast{Copyright: "MIT"}
+	data, err := getPodcastXML(podcast)
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := fmt.Sprintf("<copyright>%v</copyright>", podcast.Copyright)
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsCopyrightElement() {
-	data, err := getPodcastXML(s.podcast)
-
-	s.Nil(err)
-	s.Contains(data, fmt.Sprintf("<copyright>%s</copyright>", s.podcast.Copyright))
+func TestContainsBlockElement(t *testing.T) {
+	podcast := &Podcast{}
+	data, err := getPodcastXML(podcast, Block)
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := fmt.Sprintf("<itunes:block>%v</itunes:block>", ValueYes)
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsBlockElement() {
-	data, err := getPodcastXML(s.podcast, Block)
-
-	s.Nil(err)
-	s.Contains(data, fmt.Sprintf("<itunes:block>%s</itunes:block>", ValueYes))
+func TestContainsExplicitElement(t *testing.T) {
+	podcast := &Podcast{}
+	data, err := getPodcastXML(podcast, Explicit)
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := fmt.Sprintf("<itunes:explicit>%v</itunes:explicit>", ValueYes)
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsExplicitElement() {
-	data, err := getPodcastXML(s.podcast, Explicit)
-
-	s.Nil(err)
-	s.Contains(data, fmt.Sprintf("<itunes:explicit>%s</itunes:explicit>", ValueYes))
+func TestContainsCompleteElement(t *testing.T) {
+	podcast := &Podcast{}
+	data, err := getPodcastXML(podcast, Complete)
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := fmt.Sprintf("<itunes:complete>%v</itunes:complete>", ValueYes)
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsCompleteElement() {
-	data, err := getPodcastXML(s.podcast, Complete)
-
-	s.Nil(err)
-	s.Contains(data, fmt.Sprintf("<itunes:complete>%s</itunes:complete>", ValueYes))
-}
-
-func (s *PodcastsTestSuite) TestContainsAuthorElement() {
+func TestContainsAuthorElement(t *testing.T) {
+	podcast := &Podcast{}
 	author := "Test Author"
-	data, err := getPodcastXML(s.podcast, Author(author))
-
-	s.Nil(err)
-	s.Contains(data, fmt.Sprintf("<itunes:author>%s</itunes:author>", author))
+	data, err := getPodcastXML(podcast, Author(author))
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := fmt.Sprintf("<itunes:author>%v</itunes:author>", author)
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsNewFeedURLElement() {
+func TestContainsNewFeedURLElement(t *testing.T) {
+	podcast := &Podcast{}
 	url := "http://localhost/my-test-url"
-	data, err := getPodcastXML(s.podcast, NewFeedURL(url))
-
-	s.Nil(err)
-	s.Contains(data, fmt.Sprintf("<itunes:new-feed-url>%s</itunes:new-feed-url>", url))
+	data, err := getPodcastXML(podcast, NewFeedURL(url))
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := fmt.Sprintf("<itunes:new-feed-url>%v</itunes:new-feed-url>", url)
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsSubtitleElement() {
+func TestContainsSubtitleElement(t *testing.T) {
+	podcast := &Podcast{}
 	subtitle := "Test Subtitle"
-	data, err := getPodcastXML(s.podcast, Subtitle(subtitle))
-
-	s.Nil(err)
-	s.Contains(data, fmt.Sprintf("<itunes:subtitle>%s</itunes:subtitle>", subtitle))
+	data, err := getPodcastXML(podcast, Subtitle(subtitle))
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := fmt.Sprintf("<itunes:subtitle>%v</itunes:subtitle>", subtitle)
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsSummaryElement() {
+func TestContainsSummaryElement(t *testing.T) {
+	podcast := &Podcast{}
 	summary := `Test Summary with <a href="http://www.example.com/">link</a>`
-	data, err := getPodcastXML(s.podcast, Summary(summary))
-
-	s.Nil(err)
-	s.Contains(data, fmt.Sprintf("<itunes:summary><![CDATA[%s]]></itunes:summary>", summary))
+	data, err := getPodcastXML(podcast, Summary(summary))
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := fmt.Sprintf("<itunes:summary><![CDATA[%v]]></itunes:summary>", summary)
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsOwnerElement() {
+func TestContainsOwnerElement(t *testing.T) {
+	podcast := &Podcast{}
 	name := "Test Name"
 	email := "test@name.com"
-	data, err := getPodcastXML(s.podcast, Owner(name, email))
-
-	s.Nil(err)
-	s.Contains(data, "<itunes:owner>")
-	s.Contains(data, fmt.Sprintf("<itunes:name>%s</itunes:name>", name))
-	s.Contains(data, fmt.Sprintf("<itunes:email>%s</itunes:email>", email))
-	s.Contains(data, "</itunes:owner>")
+	data, err := getPodcastXML(podcast, Owner(name, email))
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := "<itunes:owner>"
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
+	want = fmt.Sprintf("<itunes:name>%v</itunes:name>", name)
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
+	want = fmt.Sprintf("<itunes:email>%v</itunes:email>", email)
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
+	want = "</itunes:owner>"
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsImageElement() {
+func TestContainsImageElement(t *testing.T) {
+	podcast := &Podcast{}
 	image := "http://localhost/myimage.jpg"
-	data, err := getPodcastXML(s.podcast, Image(image))
-
-	s.Nil(err)
-	s.Contains(data, fmt.Sprintf(`<itunes:image href="%s"></itunes:image>`, image))
+	data, err := getPodcastXML(podcast, Image(image))
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	want := fmt.Sprintf(`<itunes:image href="%v"></itunes:image>`, image)
+	if !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
 
-func (s *PodcastsTestSuite) TestContainsItemElements() {
+func TestContainsItemElements(t *testing.T) {
+	podcast := setupPodcast()
+	feed, err := podcast.Feed()
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	data, err := feed.XML()
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+
 	for _, item := range validItems {
-		s.podcast.AddItem(&Item{
-			Title:   item.Title,
-			GUID:    item.GUID,
-			PubDate: &PubDate{item.Time},
-			Enclosure: &Enclosure{
-				URL:    item.EnclosureURL,
-				Length: item.EnclosureLength,
-				Type:   item.EnclosureType,
-			},
+		t.Run(item.title, func(t *testing.T) {
+			if want := "<item>"; !strings.Contains(data, want) {
+				t.Errorf("expected %v to contain %v", data, want)
+			}
+			if want := fmt.Sprintf("<title>%v</title>", item.title); !strings.Contains(data, want) {
+				t.Errorf("expected %v to contain %v", data, want)
+			}
+			if want := fmt.Sprintf("<guid>%v</guid>", item.guid); !strings.Contains(data, want) {
+				t.Errorf("expected %v to contain %v", data, want)
+			}
+			if want := fmt.Sprintf("<pubDate>%v</pubDate>", item.pubDateStr); !strings.Contains(data, want) {
+				t.Errorf("expected %v to contain %v", data, want)
+			}
+			if want := fmt.Sprintf(`<enclosure url="%v" length="%v" type="%v"></enclosure>`, item.enclosureURL, item.enclosureLength, item.enclosureType); !strings.Contains(data, want) {
+				t.Errorf("expected %v to contain %v", data, want)
+			}
+			if want := "</item>"; !strings.Contains(data, want) {
+				t.Errorf("expected %v to contain %v", data, want)
+			}
 		})
 	}
-
-	feed, err := s.podcast.Feed()
-	s.Nil(err)
-
-	data, err := feed.XML()
-	s.Nil(err)
-
-	for _, item := range validItems {
-		s.Contains(data, "<item>")
-		s.Contains(data, fmt.Sprintf("<title>%s</title>", item.Title))
-		s.Contains(data, fmt.Sprintf("<guid>%s</guid>", item.GUID))
-		s.Contains(data, fmt.Sprintf("<pubDate>%s</pubDate>", item.ExpectedPubDate))
-		s.Contains(data, fmt.Sprintf(`<enclosure url="%s" length="%s" type="%s"></enclosure>`, item.EnclosureURL, item.EnclosureLength, item.EnclosureType))
-		s.Contains(data, "</item>")
-	}
 }
 
-func (s *PodcastsTestSuite) TestPodcastFeedWrite() {
-	feed, err := s.podcast.Feed()
-	s.Nil(err)
-
+func TestPodcastFeedWrite(t *testing.T) {
+	podcast := &Podcast{}
+	feed, err := podcast.Feed()
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
 	var b bytes.Buffer
 	err = feed.Write(&b)
-	s.Nil(err)
-}
-
-func TestPodcastsTestSuite(t *testing.T) {
-	suite.Run(t, new(PodcastsTestSuite))
+	if err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
 }
 
 func getPodcastXML(p *Podcast, options ...func(f *Feed) error) (string, error) {
@@ -234,4 +320,21 @@ func getPodcastXML(p *Podcast, options ...func(f *Feed) error) (string, error) {
 		return "", err
 	}
 	return feed.XML()
+}
+
+func setupPodcast() *Podcast {
+	podcast := &Podcast{}
+	for _, item := range validItems {
+		podcast.AddItem(&Item{
+			Title:   item.title,
+			GUID:    item.guid,
+			PubDate: &PubDate{item.pubDate},
+			Enclosure: &Enclosure{
+				URL:    item.enclosureURL,
+				Length: item.enclosureLength,
+				Type:   item.enclosureType,
+			},
+		})
+	}
+	return podcast
 }

@@ -2,106 +2,142 @@ package podcasts
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/suite"
 )
 
-type OptionsTestSuite struct {
-	suite.Suite
-	feed *Feed
-}
-
-func (s *OptionsTestSuite) SetupTest() {
-	s.feed = &Feed{
+func TestAuthor(t *testing.T) {
+	feed := &Feed{
 		Channel: &Channel{},
+	}
+	author := "john"
+	if err := Author(author)(feed); err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	if author != feed.Channel.Author {
+		t.Errorf("expected %v got %v", author, feed.Channel.Author)
 	}
 }
 
-func (s *OptionsTestSuite) TestAuthor() {
-	author := "john"
-	err := Author(author)(s.feed)
-
-	s.Nil(err)
-	s.Equal(author, s.feed.Channel.Author)
+func TestBlock(t *testing.T) {
+	feed := &Feed{
+		Channel: &Channel{},
+	}
+	if err := Block(feed); err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	if ValueYes != feed.Channel.Block {
+		t.Errorf("expected %v got %v", ValueYes, feed.Channel.Block)
+	}
 }
 
-func (s *OptionsTestSuite) TestBlock() {
-	err := Block(s.feed)
-
-	s.Nil(err)
-	s.Equal(ValueYes, s.feed.Channel.Block)
+func TestExplicit(t *testing.T) {
+	feed := &Feed{
+		Channel: &Channel{},
+	}
+	if err := Explicit(feed); err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	if ValueYes != feed.Channel.Explicit {
+		t.Errorf("expected %v got %v", ValueYes, feed.Channel.Explicit)
+	}
 }
 
-func (s *OptionsTestSuite) TestExplicit() {
-	err := Explicit(s.feed)
-
-	s.Nil(err)
-	s.Equal(ValueYes, s.feed.Channel.Explicit)
+func TestComplete(t *testing.T) {
+	feed := &Feed{
+		Channel: &Channel{},
+	}
+	if err := Complete(feed); err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	if ValueYes != feed.Channel.Complete {
+		t.Errorf("expected %v got %v", ValueYes, feed.Channel.Complete)
+	}
 }
 
-func (s *OptionsTestSuite) TestComplete() {
-	err := Complete(s.feed)
-
-	s.Nil(err)
-	s.Equal(ValueYes, s.feed.Channel.Complete)
-}
-
-func (s *OptionsTestSuite) TestNewFeedURL() {
+func TestNewFeedURL(t *testing.T) {
+	feed := &Feed{
+		Channel: &Channel{},
+	}
 	newURL := "http://example.com/test"
-	err := NewFeedURL(newURL)(s.feed)
-
-	s.Nil(err)
-	s.Equal(newURL, s.feed.Channel.NewFeedURL)
+	if err := NewFeedURL(newURL)(feed); err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	if newURL != feed.Channel.NewFeedURL {
+		t.Errorf("expected %v got %v", ValueYes, feed.Channel.NewFeedURL)
+	}
 }
 
-func (s *OptionsTestSuite) TestNewFeedURLInvalid() {
+func TestNewFeedURLInvalid(t *testing.T) {
+	feed := &Feed{
+		Channel: &Channel{},
+	}
 	newURL := "invalid url"
-	err := NewFeedURL(newURL)(s.feed)
-
-	s.NotNil(err)
+	if err := NewFeedURL(newURL)(feed); err == nil {
+		t.Error("expected error")
+	}
 }
 
-func (s *OptionsTestSuite) TestSubtitle() {
+func TestSubtitle(t *testing.T) {
+	feed := &Feed{
+		Channel: &Channel{},
+	}
 	subtitle := "this is subtitle"
-	err := Subtitle(subtitle)(s.feed)
-
-	s.Nil(err)
-	s.Equal(subtitle, s.feed.Channel.Subtitle)
+	if err := Subtitle(subtitle)(feed); err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	if subtitle != feed.Channel.Subtitle {
+		t.Errorf("expected %v got %v", subtitle, feed.Channel.Subtitle)
+	}
 }
 
-func (s *OptionsTestSuite) TestSummary() {
+func TestSummary(t *testing.T) {
+	feed := &Feed{
+		Channel: &Channel{},
+	}
 	summary := `this is summary. <a href="http://example.com/more">more</a>`
-	err := Summary(summary)(s.feed)
-
-	s.Nil(err)
-	s.Equal(summary, s.feed.Channel.Summary.Value)
+	if err := Summary(summary)(feed); err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	if summary != feed.Channel.Summary.Value {
+		t.Errorf("expected %v got %v", summary, feed.Channel.Summary.Value)
+	}
 }
 
-func (s *OptionsTestSuite) TestOwner() {
+func TestOwner(t *testing.T) {
+	feed := &Feed{
+		Channel: &Channel{},
+	}
 	name := "anabelle"
 	email := "test@test.com"
-	err := Owner(name, email)(s.feed)
-
-	s.Nil(err)
-	s.Equal(name, s.feed.Channel.Owner.Name)
-	s.Equal(email, s.feed.Channel.Owner.Email)
+	if err := Owner(name, email)(feed); err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	if name != feed.Channel.Owner.Name {
+		t.Errorf("expected %v got %v", name, feed.Channel.Owner.Name)
+	}
+	if email != feed.Channel.Owner.Email {
+		t.Errorf("expected %v got %v", email, feed.Channel.Owner.Email)
+	}
 }
 
-func (s *OptionsTestSuite) TestImage() {
+func TestImage(t *testing.T) {
+	feed := &Feed{
+		Channel: &Channel{},
+	}
 	href := "http://example.com/test/image.jpg"
-	err := Image(href)(s.feed)
-
-	s.Nil(err)
-	s.Equal(href, s.feed.Channel.Image.Href)
+	if err := Image(href)(feed); err != nil {
+		t.Errorf("unexpected error %v", err)
+	}
+	if href != feed.Channel.Image.Href {
+		t.Errorf("expected %v got %v", href, feed.Channel.Image.Href)
+	}
 }
 
-func (s *OptionsTestSuite) TestImageInvalid() {
+func TestImageInvalid(t *testing.T) {
+	feed := &Feed{
+		Channel: &Channel{},
+	}
 	href := "invalid url"
-	err := Image(href)(s.feed)
-
-	s.NotNil(err)
-}
-
-func TestOptionsTestSuite(t *testing.T) {
-	suite.Run(t, new(OptionsTestSuite))
+	if err := Image(href)(feed); err == nil {
+		t.Errorf("expected error")
+	}
 }
