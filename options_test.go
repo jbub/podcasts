@@ -136,7 +136,7 @@ func TestImageInvalid(t *testing.T) {
 	feed := &Feed{
 		Channel: &Channel{},
 	}
-	href := "invalid url"
+	href := "invalid img url"
 	if err := Image(href)(feed); err == nil {
 		t.Errorf("expected error")
 	}
