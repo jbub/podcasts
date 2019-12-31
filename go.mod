@@ -1,3 +1,3 @@
 module github.com/jbub/podcasts
 
-go 1.12
+go 1.13
