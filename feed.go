@@ -72,7 +72,7 @@ type Item struct {
 	PubDate         *PubDate       `xml:"pubDate"`
 	Author          string         `xml:"itunes:author,omitempty"`
 	Block           string         `xml:"itunes:block,omitempty"`
-	Duration        time.Duration  `xml:"itunes:duration,omitempty"`
+	Duration        string  `xml:"itunes:duration,omitempty"`
 	Explicit        string         `xml:"itunes:explicit,omitempty"`
 	ClosedCaptioned string         `xml:"itunes:isClosedCaptioned,omitempty"`
 	Order           int            `xml:"itunes:order,omitempty"`
