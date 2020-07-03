@@ -81,6 +81,8 @@ type Item struct {
 	Summary         *ItunesSummary `xml:"itunes:summary,omitempty"`
 	Enclosure       *Enclosure
 	Image           *ItunesImage
+    Season          int            `xml:"itunes:season,omitempty"`
+    Episode         int            `xml:"itunes:episode,omitempty"`
 }
 
 // Channel represents a RSS channel for given podcast.
