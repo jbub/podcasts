@@ -102,3 +102,24 @@ func Image(href string) func(f *Feed) error {
 		return nil
 	}
 }
+
+
+
+// Category appends itunes:category of given feed.
+// Execute multiple times to add new main category and subcategories
+func Category(category string, subcategories []string) func(f *Feed) error {
+	return func(f *Feed) error {
+        c := &ItunesCategory{
+            Text: category,
+        }
+
+        for _, subcategory := range subcategories {
+            c.Categories = append(c.Categories, &ItunesCategory{
+                Text: subcategory,
+            })
+        }
+
+		f.Channel.Categories = append(f.Channel.Categories, c)
+		return nil
+	}
+}
