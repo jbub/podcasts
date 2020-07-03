@@ -76,6 +76,7 @@ type Item struct {
 	Explicit        string         `xml:"itunes:explicit,omitempty"`
 	ClosedCaptioned string         `xml:"itunes:isClosedCaptioned,omitempty"`
 	Order           int            `xml:"itunes:order,omitempty"`
+    ItunesTitle     string         `xml:"itunes:title,omitempty"`
 	Subtitle        string         `xml:"itunes:subtitle,omitempty"`
 	Summary         *ItunesSummary `xml:"itunes:summary,omitempty"`
 	Enclosure       *Enclosure
