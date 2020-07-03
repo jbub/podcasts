@@ -13,9 +13,10 @@ var (
 	ErrInvalidImage = errors.New("podcasts: invalid image")
 )
 
+// Values represents positive/negative value used in XML feed.
 const (
-	// ValueYes represents positive value used in XML feed.
 	ValueYes = "yes"
+	ValueNo = "no"
 )
 
 // Author sets itunes:author of given feed.
@@ -35,6 +36,11 @@ func Block(f *Feed) error {
 // Explicit enables itunes:explicit of given feed.
 func Explicit(f *Feed) error {
 	f.Channel.Explicit = ValueYes
+	return nil
+}
+// NotExplicit disables itunes:explicit of given feed.
+func NotExplicit(f *Feed) error {
+	f.Channel.Explicit = ValueNo
 	return nil
 }
 
