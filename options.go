@@ -19,6 +19,7 @@ const (
 	ValueNo = "no"
 )
 
+
 // Author sets itunes:author of given feed.
 func Author(author string) func(f *Feed) error {
 	return func(f *Feed) error {
@@ -49,7 +50,6 @@ func Complete(f *Feed) error {
 	f.Channel.Complete = ValueYes
 	return nil
 }
-
 // NewFeedURL sets itunes:new-feed-url of given feed.
 func NewFeedURL(newURL string) func(f *Feed) error {
 	return func(f *Feed) error {
