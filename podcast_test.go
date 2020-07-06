@@ -17,6 +17,8 @@ var (
 		enclosureURL    string
 		enclosureLength string
 		enclosureType   string
+		duration        time.Duration
+		durationStr     string
 	}{
 		{
 			title:           "Item 1",
@@ -35,6 +37,8 @@ var (
 			enclosureURL:    "http://www.example-podcast.com/my-podcast/2/episode-two",
 			enclosureLength: "56445",
 			enclosureType:   "WAV",
+			duration:        time.Second * 94,
+			durationStr:     "1:34",
 		},
 	}
 )
@@ -294,6 +298,11 @@ func TestContainsItemElements(t *testing.T) {
 			if want := fmt.Sprintf(`<enclosure url="%v" length="%v" type="%v"></enclosure>`, item.enclosureURL, item.enclosureLength, item.enclosureType); !strings.Contains(data, want) {
 				t.Errorf("expected %v to contain %v", data, want)
 			}
+			if item.durationStr != "" {
+				if want := fmt.Sprintf("<itunes:duration>%v</itunes:duration>", item.durationStr); !strings.Contains(data, want) {
+					t.Errorf("expected %v to contain %v", data, want)
+				}
+			}
 			if want := "</item>"; !strings.Contains(data, want) {
 				t.Errorf("expected %v to contain %v", data, want)
 			}
@@ -326,9 +335,10 @@ func setupPodcast() *Podcast {
 	podcast := &Podcast{}
 	for _, item := range validItems {
 		podcast.AddItem(&Item{
-			Title:   item.title,
-			GUID:    item.guid,
-			PubDate: NewPubDate(item.pubDate),
+			Title:    item.title,
+			GUID:     item.guid,
+			PubDate:  NewPubDate(item.pubDate),
+			Duration: NewDuration(item.duration),
 			Enclosure: &Enclosure{
 				URL:    item.enclosureURL,
 				Length: item.enclosureLength,

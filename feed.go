@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/xml"
 	"io"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -32,6 +34,50 @@ func (p PubDate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 	return e.EncodeToken(xml.EndElement{Name: start.Name})
+}
+
+// NewDuration returns a new Duration.
+func NewDuration(d time.Duration) *Duration {
+	return &Duration{d}
+}
+
+// Duration represents itunes:duration attribute of given podcast item.
+type Duration struct {
+	time.Duration
+}
+
+// MarshalXML marshalls duration using HH:MM:SS, H:MM:SS, MM:SS, M:SS formats.
+func (d Duration) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeToken(start); err != nil {
+		return err
+	}
+	if err := e.EncodeToken(xml.CharData(formatDuration(d.Duration))); err != nil {
+		return err
+	}
+	return e.EncodeToken(xml.EndElement{Name: start.Name})
+}
+
+// formatDuration formats duration in these formats: HH:MM:SS, H:MM:SS, MM:SS, M:SS.
+func formatDuration(d time.Duration) string {
+	total := int(d.Seconds())
+	hours := total / 3600
+	total %= 3600
+	minutes := total / 60
+	total %= 60
+
+	var b strings.Builder
+	if hours > 0 {
+		b.WriteString(strconv.Itoa(hours) + ":")
+	}
+	if hours > 0 && minutes < 10 {
+		b.WriteString("0")
+	}
+	b.WriteString(strconv.Itoa(minutes) + ":")
+	if total < 10 {
+		b.WriteString("0")
+	}
+	b.WriteString(strconv.Itoa(total))
+	return b.String()
 }
 
 // ItunesOwner represents the itunes:owner of given channel.
@@ -76,7 +122,7 @@ type Item struct {
 	PubDate         *PubDate       `xml:"pubDate"`
 	Author          string         `xml:"itunes:author,omitempty"`
 	Block           string         `xml:"itunes:block,omitempty"`
-	Duration        time.Duration  `xml:"itunes:duration,omitempty"`
+	Duration        *Duration      `xml:"itunes:duration,omitempty"`
 	Explicit        string         `xml:"itunes:explicit,omitempty"`
 	ClosedCaptioned string         `xml:"itunes:isClosedCaptioned,omitempty"`
 	Order           int            `xml:"itunes:order,omitempty"`
