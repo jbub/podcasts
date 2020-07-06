@@ -23,7 +23,7 @@ func (p PubDate) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if err := e.EncodeToken(start); err != nil {
 		return err
 	}
-	if err := e.EncodeToken(xml.CharData([]byte(p.Format(rfc2822)))); err != nil {
+	if err := e.EncodeToken(xml.CharData(p.Format(rfc2822))); err != nil {
 		return err
 	}
 	return e.EncodeToken(xml.EndElement{Name: start.Name})
