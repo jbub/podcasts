@@ -328,7 +328,7 @@ func setupPodcast() *Podcast {
 		podcast.AddItem(&Item{
 			Title:   item.title,
 			GUID:    item.guid,
-			PubDate: &PubDate{item.pubDate},
+			PubDate: NewPubDate(item.pubDate),
 			Enclosure: &Enclosure{
 				URL:    item.enclosureURL,
 				Length: item.enclosureLength,

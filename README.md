@@ -42,7 +42,7 @@ func main() {
     p.AddItem(&podcasts.Item{
         Title:   "Episode 1",
         GUID:    "http://www.example-podcast.com/my-podcast/1/episode-one",
-        PubDate: &podcasts.PubDate{time.Now()},
+        PubDate: podcasts.NewPubDate(time.Now()),
         Enclosure: &podcasts.Enclosure{
             URL:    "http://www.example-podcast.com/my-podcast/1/episode.mp3",
             Length: "12312",
@@ -54,7 +54,7 @@ func main() {
     p.AddItem(&podcasts.Item{
         Title:   "Episode 2",
         GUID:    "http://www.example-podcast.com/my-podcast/2/episode-two",
-        PubDate: &podcasts.PubDate{time.Now()},
+        PubDate: podcasts.NewPubDate(time.Now()),
         Enclosure: &podcasts.Enclosure{
             URL:    "http://www.example-podcast.com/my-podcast/2/episode.mp3",
             Length: "46732",

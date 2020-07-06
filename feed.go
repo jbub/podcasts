@@ -13,6 +13,11 @@ const (
 	rfc2822    = "Mon, 02 Jan 2006 15:04:05 -0700"
 )
 
+// NewPubDate returns a new PubDate.
+func NewPubDate(d time.Time) *PubDate {
+	return &PubDate{d}
+}
+
 // PubDate represents pubDate attribute of given podcast item.
 type PubDate struct {
 	time.Time
