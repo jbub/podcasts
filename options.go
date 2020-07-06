@@ -13,10 +13,12 @@ var (
 	ErrInvalidImage = errors.New("podcasts: invalid image")
 )
 
+// Values represents positive/negative value used in XML feed.
 const (
-	// ValueYes represents positive value used in XML feed.
 	ValueYes = "yes"
+	ValueNo = "no"
 )
+
 
 // Author sets itunes:author of given feed.
 func Author(author string) func(f *Feed) error {
@@ -37,13 +39,17 @@ func Explicit(f *Feed) error {
 	f.Channel.Explicit = ValueYes
 	return nil
 }
+// NotExplicit disables itunes:explicit of given feed.
+func NotExplicit(f *Feed) error {
+	f.Channel.Explicit = ValueNo
+	return nil
+}
 
 // Complete enables itunes:complete of given feed.
 func Complete(f *Feed) error {
 	f.Channel.Complete = ValueYes
 	return nil
 }
-
 // NewFeedURL sets itunes:new-feed-url of given feed.
 func NewFeedURL(newURL string) func(f *Feed) error {
 	return func(f *Feed) error {
@@ -99,6 +105,27 @@ func Image(href string) func(f *Feed) error {
 		f.Channel.Image = &ItunesImage{
 			Href: href,
 		}
+		return nil
+	}
+}
+
+
+
+// Category appends itunes:category of given feed.
+// Execute multiple times to add new main category and subcategories
+func Category(category string, subcategories []string) func(f *Feed) error {
+	return func(f *Feed) error {
+        c := &ItunesCategory{
+            Text: category,
+        }
+
+        for _, subcategory := range subcategories {
+            c.Categories = append(c.Categories, &ItunesCategory{
+                Text: subcategory,
+            })
+        }
+
+		f.Channel.Categories = append(f.Channel.Categories, c)
 		return nil
 	}
 }

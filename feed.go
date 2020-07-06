@@ -68,17 +68,21 @@ type Item struct {
 	XMLName         xml.Name       `xml:"item"`
 	Title           string         `xml:"title"`
 	GUID            string         `xml:"guid"`
+	Link            string         `xml:"link"`
 	PubDate         *PubDate       `xml:"pubDate"`
 	Author          string         `xml:"itunes:author,omitempty"`
 	Block           string         `xml:"itunes:block,omitempty"`
-	Duration        time.Duration  `xml:"itunes:duration,omitempty"`
+	Duration        string  `xml:"itunes:duration,omitempty"`
 	Explicit        string         `xml:"itunes:explicit,omitempty"`
 	ClosedCaptioned string         `xml:"itunes:isClosedCaptioned,omitempty"`
 	Order           int            `xml:"itunes:order,omitempty"`
+    ItunesTitle     string         `xml:"itunes:title,omitempty"`
 	Subtitle        string         `xml:"itunes:subtitle,omitempty"`
 	Summary         *ItunesSummary `xml:"itunes:summary,omitempty"`
 	Enclosure       *Enclosure
 	Image           *ItunesImage
+    Season          int            `xml:"itunes:season,omitempty"`
+    Episode         int            `xml:"itunes:episode,omitempty"`
 }
 
 // Channel represents a RSS channel for given podcast.
