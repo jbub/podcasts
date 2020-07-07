@@ -1,5 +1,5 @@
 # podcasts 
-[![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/jbub/podcasts) 
+[![GoDoc](https://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/jbub/podcasts) 
 [![Build Status](https://cloud.drone.io/api/badges/jbub/podcasts/status.svg)](https://cloud.drone.io/jbub/podcasts)
 [![Go Report Card](https://goreportcard.com/badge/github.com/jbub/podcasts)](https://goreportcard.com/report/github.com/jbub/podcasts)
 
@@ -13,7 +13,7 @@ go get github.com/jbub/podcasts
 
 ## Docs
 
-http://godoc.org/github.com/jbub/podcasts
+https://godoc.org/github.com/jbub/podcasts
 
 ## Example usage
 
@@ -21,67 +21,69 @@ http://godoc.org/github.com/jbub/podcasts
 package main
 
 import (
-    "log"
-    "os"
-    "time"
+	"log"
+	"os"
+	"time"
 
-    "github.com/jbub/podcasts"
+	"github.com/jbub/podcasts"
 )
 
 func main() {
-    // initialize the podcast
-    p := &podcasts.Podcast{
-        Title:       "My podcast",
-        Description: "This is my very simple podcast.",
-        Language:    "EN",
-        Link:        "http://www.example-podcast.com/my-podcast",
-        Copyright:   "2015 My podcast copyright",
-    }
+	// initialize the podcast
+	p := &podcasts.Podcast{
+		Title:       "My podcast",
+		Description: "This is my very simple podcast.",
+		Language:    "EN",
+		Link:        "http://www.example-podcast.com/my-podcast",
+		Copyright:   "2015 My podcast copyright",
+	}
 
-    // add first podcast item
-    p.AddItem(&podcasts.Item{
-        Title:   "Episode 1",
-        GUID:    "http://www.example-podcast.com/my-podcast/1/episode-one",
-        PubDate: podcasts.NewPubDate(time.Now()),
-        Enclosure: &podcasts.Enclosure{
-            URL:    "http://www.example-podcast.com/my-podcast/1/episode.mp3",
-            Length: "12312",
-            Type:   "MP3",
-        },
-    })
+	// add first podcast item
+	p.AddItem(&podcasts.Item{
+		Title:    "Episode 1",
+		GUID:     "http://www.example-podcast.com/my-podcast/1/episode-one",
+		PubDate:  podcasts.NewPubDate(time.Now()),
+		Duration: podcasts.NewDuration(time.Second * 230),
+		Enclosure: &podcasts.Enclosure{
+			URL:    "http://www.example-podcast.com/my-podcast/1/episode.mp3",
+			Length: "12312",
+			Type:   "MP3",
+		},
+	})
 
-    // add second podcast item
-    p.AddItem(&podcasts.Item{
-        Title:   "Episode 2",
-        GUID:    "http://www.example-podcast.com/my-podcast/2/episode-two",
-        PubDate: podcasts.NewPubDate(time.Now()),
-        Enclosure: &podcasts.Enclosure{
-            URL:    "http://www.example-podcast.com/my-podcast/2/episode.mp3",
-            Length: "46732",
-            Type:   "MP3",
-        },
-    })
+	// add second podcast item
+	p.AddItem(&podcasts.Item{
+		Title:   "Episode 2",
+		GUID:    "http://www.example-podcast.com/my-podcast/2/episode-two",
+		PubDate: podcasts.NewPubDate(time.Now()),
+		Duration: podcasts.NewDuration(time.Second * 320),
+		Enclosure: &podcasts.Enclosure{
+			URL:    "http://www.example-podcast.com/my-podcast/2/episode.mp3",
+			Length: "46732",
+			Type:   "MP3",
+		},
+	})
 
-    // get podcast feed, you can pass options to customize it
-    feed, err := p.Feed(
-        podcasts.Author("Author Name"),
-        podcasts.Block,
-        podcasts.Explicit,
-        podcasts.Complete,
-        podcasts.NewFeedURL("http://www.example-podcast.com/new-feed-url"),
-        podcasts.Subtitle("This is my very simple podcast subtitle."),
-        podcasts.Summary("This is my very simple podcast summary."),
-        podcasts.Owner("Podcast Owner", "owner@example-podcast.com"),
-        podcasts.Image("http://www.example-podcast.com/my-podcast.jpg"),
-    )
+	// get podcast feed, you can pass options to customize it
+	feed, err := p.Feed(
+		podcasts.Author("Author Name"),
+		podcasts.Block,
+		podcasts.Explicit,
+		podcasts.Complete,
+		podcasts.NewFeedURL("http://www.example-podcast.com/new-feed-url"),
+		podcasts.Subtitle("This is my very simple podcast subtitle."),
+		podcasts.Summary("This is my very simple podcast summary."),
+		podcasts.Owner("Podcast Owner", "owner@example-podcast.com"),
+		podcasts.Image("http://www.example-podcast.com/my-podcast.jpg"),
+	)
 
-    // handle error
-    if err != nil {
-        log.Fatal(err)
-    }
+	// handle error
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    // finally write the xml to any io.Writer
-    feed.Write(os.Stdout)
+	// finally write the xml to any io.Writer
+	feed.Write(os.Stdout)
 }
 ```
 
@@ -111,13 +113,15 @@ Which gives us this XML output:
     <item>
       <title>Episode 1</title>
       <guid>http://www.example-podcast.com/my-podcast/1/episode-one</guid>
-      <pubDate>Thu, 19 May 2016 10:47:39 +0100</pubDate>
+      <pubDate>Tue, 10 Nov 2009 23:00:00 +0000</pubDate>
+      <itunes:duration>3:50</itunes:duration>
       <enclosure url="http://www.example-podcast.com/my-podcast/1/episode.mp3" length="12312" type="MP3"></enclosure>
     </item>
     <item>
       <title>Episode 2</title>
       <guid>http://www.example-podcast.com/my-podcast/2/episode-two</guid>
-      <pubDate>Thu, 19 May 2016 10:47:39 +0100</pubDate>
+      <pubDate>Tue, 10 Nov 2009 23:00:00 +0000</pubDate>
+      <itunes:duration>5:20</itunes:duration>
       <enclosure url="http://www.example-podcast.com/my-podcast/2/episode.mp3" length="46732" type="MP3"></enclosure>
     </item>
   </channel>

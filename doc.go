@@ -14,7 +14,8 @@ Package podcasts implements a podcast generator.
     p.AddItem(&podcasts.Item{
         Title:   "Episode 1",
         GUID:    "http://www.example-podcast.com/my-podcast/1/episode-one",
-        PubDate: &podcasts.NewPubDate(time.Now()),
+        PubDate: podcasts.NewPubDate(time.Now()),
+        Duration: podcasts.NewDuration(time.Second * 320),
         Enclosure: &podcasts.Enclosure{
             URL:    "http://www.example-podcast.com/my-podcast/1/episode.mp3",
             Length: "12312",
@@ -26,7 +27,8 @@ Package podcasts implements a podcast generator.
     p.AddItem(&podcasts.Item{
         Title:   "Episode 2",
         GUID:    "http://www.example-podcast.com/my-podcast/2/episode-two",
-        PubDate: &podcasts.NewPubDate(time.Now()),
+        PubDate: podcasts.NewPubDate(time.Now()),
+        Duration: podcasts.NewDuration(time.Second * 210),
         Enclosure: &podcasts.Enclosure{
             URL:    "http://www.example-podcast.com/my-podcast/2/episode.mp3",
             Length: "46732",
