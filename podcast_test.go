@@ -10,15 +10,17 @@ import (
 
 var (
 	validItems = []struct {
-		title           string
-		guid            string
-		pubDate         time.Time
-		pubDateStr      string
-		enclosureURL    string
-		enclosureLength string
-		enclosureType   string
-		duration        time.Duration
-		durationStr     string
+		title             string
+		guid              string
+		pubDate           time.Time
+		pubDateStr        string
+		enclosureURL      string
+		enclosureLength   string
+		enclosureType     string
+		duration          time.Duration
+		durationStr       string
+		descriptionStr    string
+		encodedContentStr string
 	}{
 		{
 			title:           "Item 1",
@@ -39,6 +41,17 @@ var (
 			enclosureType:   "WAV",
 			duration:        time.Second * 94,
 			durationStr:     "1:34",
+		},
+		{
+			title:             "Item 3",
+			guid:              "http://www.example-podcast.com/my-podcast/3/episode",
+			pubDate:           time.Date(2015, time.January, 3, 0, 0, 0, 0, time.UTC),
+			pubDateStr:        "Thu, 01 Jan 2015 00:00:00 +0000",
+			enclosureURL:      "http://www.example-podcast.com/my-podcast/3/episode-three",
+			enclosureLength:   "1234",
+			enclosureType:     "MP3",
+			descriptionStr:    "A short description of the podcast episode",
+			encodedContentStr: "<h1>Item 3</h1><p>A <em>longer</em> description of the podcast, specifically designed for embedded HTML.</p>",
 		},
 	}
 )
@@ -303,6 +316,16 @@ func TestContainsItemElements(t *testing.T) {
 					t.Errorf("expected %v to contain %v", data, want)
 				}
 			}
+			if item.descriptionStr != "" {
+				if want := fmt.Sprintf("<description><![CDATA[%v]]></description>", item.descriptionStr); !strings.Contains(data, want) {
+					t.Errorf("expected %v to contain %v", data, want)
+				}
+			}
+			if item.encodedContentStr != "" {
+				if want := fmt.Sprintf("<content:encoded><![CDATA[%v]]></content:encoded>", item.encodedContentStr); !strings.Contains(data, want) {
+					t.Errorf("expected %v to contain %v", data, want)
+				}
+			}
 			if want := "</item>"; !strings.Contains(data, want) {
 				t.Errorf("expected %v to contain %v", data, want)
 			}
@@ -334,11 +357,25 @@ func getPodcastXML(p *Podcast, options ...func(f *Feed) error) (string, error) {
 func setupPodcast() *Podcast {
 	podcast := &Podcast{}
 	for _, item := range validItems {
+
+		var description *CDATAText
+		if item.descriptionStr != "" {
+			description = &CDATAText{Value: item.descriptionStr}
+		}
+
+		var encodedContent *CDATAText
+		if item.encodedContentStr != "" {
+			encodedContent = &CDATAText{Value: item.encodedContentStr}
+		}
+
 		podcast.AddItem(&Item{
-			Title:    item.title,
-			GUID:     item.guid,
-			PubDate:  NewPubDate(item.pubDate),
-			Duration: NewDuration(item.duration),
+			Title:          item.title,
+			GUID:           item.guid,
+			PubDate:        NewPubDate(item.pubDate),
+			Duration:       NewDuration(item.duration),
+			Description:    description,
+			ContentEncoded: encodedContent,
+
 			Enclosure: &Enclosure{
 				URL:    item.enclosureURL,
 				Length: item.enclosureLength,
