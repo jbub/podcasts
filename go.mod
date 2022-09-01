@@ -1,3 +1,3 @@
-module github.com/jbub/podcasts
+module github.com/CallumKerrEdwards/podcasts
 
 go 1.17
