@@ -296,39 +296,7 @@ func TestContainsItemElements(t *testing.T) {
 
 	for _, item := range validItems {
 		t.Run(item.title, func(t *testing.T) {
-			if want := "<item>"; !strings.Contains(data, want) {
-				t.Errorf("expected %v to contain %v", data, want)
-			}
-			if want := fmt.Sprintf("<title>%v</title>", item.title); !strings.Contains(data, want) {
-				t.Errorf("expected %v to contain %v", data, want)
-			}
-			if want := fmt.Sprintf("<guid>%v</guid>", item.guid); !strings.Contains(data, want) {
-				t.Errorf("expected %v to contain %v", data, want)
-			}
-			if want := fmt.Sprintf("<pubDate>%v</pubDate>", item.pubDateStr); !strings.Contains(data, want) {
-				t.Errorf("expected %v to contain %v", data, want)
-			}
-			if want := fmt.Sprintf(`<enclosure url="%v" length="%v" type="%v"></enclosure>`, item.enclosureURL, item.enclosureLength, item.enclosureType); !strings.Contains(data, want) {
-				t.Errorf("expected %v to contain %v", data, want)
-			}
-			if item.durationStr != "" {
-				if want := fmt.Sprintf("<itunes:duration>%v</itunes:duration>", item.durationStr); !strings.Contains(data, want) {
-					t.Errorf("expected %v to contain %v", data, want)
-				}
-			}
-			if item.descriptionStr != "" {
-				if want := fmt.Sprintf("<description><![CDATA[%v]]></description>", item.descriptionStr); !strings.Contains(data, want) {
-					t.Errorf("expected %v to contain %v", data, want)
-				}
-			}
-			if item.encodedContentStr != "" {
-				if want := fmt.Sprintf("<content:encoded><![CDATA[%v]]></content:encoded>", item.encodedContentStr); !strings.Contains(data, want) {
-					t.Errorf("expected %v to contain %v", data, want)
-				}
-			}
-			if want := "</item>"; !strings.Contains(data, want) {
-				t.Errorf("expected %v to contain %v", data, want)
-			}
+			validatePodcastItem(t, data, item)
 		})
 	}
 }
@@ -384,4 +352,52 @@ func setupPodcast() *Podcast {
 		})
 	}
 	return podcast
+}
+
+func validatePodcastItem(t *testing.T, data string, item struct {
+	title             string
+	guid              string
+	pubDate           time.Time
+	pubDateStr        string
+	enclosureURL      string
+	enclosureLength   string
+	enclosureType     string
+	duration          time.Duration
+	durationStr       string
+	descriptionStr    string
+	encodedContentStr string
+}) {
+	if want := "<item>"; !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
+	if want := fmt.Sprintf("<title>%v</title>", item.title); !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
+	if want := fmt.Sprintf("<guid>%v</guid>", item.guid); !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
+	if want := fmt.Sprintf("<pubDate>%v</pubDate>", item.pubDateStr); !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
+	if want := fmt.Sprintf(`<enclosure url="%v" length="%v" type="%v"></enclosure>`, item.enclosureURL, item.enclosureLength, item.enclosureType); !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
+	if item.durationStr != "" {
+		if want := fmt.Sprintf("<itunes:duration>%v</itunes:duration>", item.durationStr); !strings.Contains(data, want) {
+			t.Errorf("expected %v to contain %v", data, want)
+		}
+	}
+	if item.descriptionStr != "" {
+		if want := fmt.Sprintf("<description><![CDATA[%v]]></description>", item.descriptionStr); !strings.Contains(data, want) {
+			t.Errorf("expected %v to contain %v", data, want)
+		}
+	}
+	if item.encodedContentStr != "" {
+		if want := fmt.Sprintf("<content:encoded><![CDATA[%v]]></content:encoded>", item.encodedContentStr); !strings.Contains(data, want) {
+			t.Errorf("expected %v to contain %v", data, want)
+		}
+	}
+	if want := "</item>"; !strings.Contains(data, want) {
+		t.Errorf("expected %v to contain %v", data, want)
+	}
 }
