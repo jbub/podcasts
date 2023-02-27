@@ -1,5 +1,10 @@
 # podcasts 
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/CallumKerson/podcasts?style=flat-square)](https://goreportcard.com/report/github.com/CallumKerson/podcasts)
+[![Go Reference](https://pkg.go.dev/badge/github.com/CallumKerson/podcasts.svg)](https://pkg.go.dev/github.com/CallumKerson/podcasts)
+[![Release](https://img.shields.io/github/release/CallumKerson/podcasts.svg?style=flat-square)](https://github.com/CallumKerson/podcasts/releases/latest)
+
+
 Podcast generator written in Go.
 
 ## Install
