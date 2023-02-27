@@ -5,12 +5,12 @@ Podcast generator written in Go.
 ## Install
 
 ```bash
-go get github.com/CallumKerrEdwards/podcasts
+go get github.com/CallumKerson/podcasts
 ```
 
 ## Docs
 
-https://godoc.org/github.com/CallumKerrEdwards/podcasts
+https://godoc.org/github.com/CallumKerson/podcasts
 
 ## Example usage
 
@@ -22,7 +22,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/CallumKerrEdwards/podcasts"
+	"github.com/CallumKerson/podcasts"
 )
 
 func main() {
