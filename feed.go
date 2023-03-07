@@ -10,9 +10,10 @@ import (
 )
 
 const (
-	rssXmlns   = "http://www.itunes.com/dtds/podcast-1.0.dtd"
-	rssVersion = "2.0"
-	rfc2822    = "Mon, 02 Jan 2006 15:04:05 -0700"
+	itunesXMLNS  = "http://www.itunes.com/dtds/podcast-1.0.dtd"
+	contentXMLNS = "http://purl.org/rss/1.0/modules/content/"
+	rssVersion   = "2.0"
+	rfc2822      = "Mon, 02 Jan 2006 15:04:05 -0700"
 )
 
 // NewPubDate returns a new PubDate.
@@ -157,9 +158,10 @@ type Channel struct {
 
 // Feed wraps the given RSS channel.
 type Feed struct {
-	XMLName xml.Name `xml:"rss"`
-	Xmlns   string   `xml:"xmlns:itunes,attr"`
-	Version string   `xml:"version,attr"`
+	XMLName      xml.Name `xml:"rss"`
+	ItunesXMLNS  string   `xml:"xmlns:itunes,attr"`
+	ContentXMLNS string   `xml:"xmlns:content,attr"`
+	Version      string   `xml:"version,attr"`
 	Channel *Channel
 }
 
